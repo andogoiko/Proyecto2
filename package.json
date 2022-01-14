@@ -1,0 +1,30 @@
+{
+  "name": "Ando_proyecto_frontend",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "parcel build *.html --public-url /2daw3/andoitzg/trabajos/Ando_proyecto_frontend",
+    "prebuild": "(test -d dist || mkdir dist)  && cp -rv images dist",
+    "prestart": "yarn prebuild",
+    "start": "parcel serve *.html --open"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.0.1",
+    "parcel": "^2.0.1"
+  },
+  "dependencies": {
+    "bootstrap": "^5.1.3",
+    "jquery": "^3.6.0",
+    "jquery-ui": "^1.13.0",
+    "leaflet": "^1.7.1"
+  },
+  "alias": {
+    "leaflet": {
+      "global": "L"
+    },
+    "bootstrap": {
+      "global": "bootstrap"
+    }
+  }
+}

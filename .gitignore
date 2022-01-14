@@ -1,0 +1,10 @@
+/.yarn/*
+!/.yarn/patches
+!/.yarn/plugins
+!/.yarn/releases
+!/.yarn/sdks
+.log
+.idea
+.parcel-cache
+dist
+node_modules
