@@ -18,58 +18,92 @@
 </head>
 
 <body>
-    <div class="container-fluid d-flex align-items-center flex-column">
-        <h1 class="text-center text-danger">Euskadi Temporalis Analysis</h1>
+
+    <div id="header" class="container d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <span class="fs-1 text-center">Euskadi Temporalis Analysis</span>
+    </div>
+
+    <div id="section" class="container-fluid d-flex align-items-center flex-column">
         
-        <div id="c-filtros" class="container position-absolute leaflet-control">
-            <div id="drop-filtros" class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="filtros" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Filtros
-                </button>
-                <div id="m-filtros" class="dropdown-menu mb-5" aria-labelledby="filtros">
-                    <div class="container d-flex">
-                        <select class="custom-select custom-select-sm">
-                            <option selected>Provincia...</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                        <select class="custom-select custom-select-sm">
-                            <option selected>Municipio...</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
-                        <button type="button" class="btn btn-success ms-auto">Filtrar</button>
+        <div id="c-Visib" class="container d-flex mt-5">
+            <button id="bVisib" type="button" class="btn btn-light mt-1 mb-2 py-0 px-2 ms-auto">-</button>
+        </div>
+        
+        <div id="c-mapa" class="container pb-2 rounded-bottom">
+            <div id="c-filtros" class="leaflet-control container position-absolute px-5 mx-auto start-0 end-0 mt-3">
+                <div id="drop-filtros" class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filtros" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Filtros
+                    </button>
+                    <div id="m-filtros" class="dropdown-menu mb-5" aria-labelledby="filtros">
+                        <div class="container d-flex">
+                            <select class="custom-select custom-select-sm">
+                                <option selected>Provincia...</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <select class="custom-select custom-select-sm">
+                                <option selected>Municipio...</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                            <button type="button" class="btn btn-success ms-auto">Filtrar</button>
+                        </div>
                     </div>
                 </div>
             </div>
+            
+            <div id="map" class="container position-relative"></div>
         </div>
         
-        <div id="map" class="container position-relative mt-5"></div>
-        
-        <div id="caja-parametros" class="container mt-5 d-flex flex-row justify-content-between bg-danger">
-            a
-        </div>
-        
-        <div id="c-loc-activas" class="container mt-5 mb-1">
-            <div id="drop-loc-activas" class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="loc-activas" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Dropdown button
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="loc-activas">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
+        <div id="cDragZone" class="container-fluid mt-5">
+            <div id="caja-parametros" class="container d-flex flex-row justify-content-between bg-danger">
+                a
+            </div>
+            
+            <div id="c-loc-activas" class="container mt-5 mb-1">
+                <div id="drop-loc-activas" class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="loc-activas" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Dropdown button
+                    </button>
+                    <ul id="lista-loc-activas" class="dropdown-menu" aria-labelledby="loc-activas">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="fichas-tiempo" class="container d-flex row flex-wrap justify-content-around">
+            
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        Featured
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"></li>
+                        <li class="list-group-item">Temperatura</li>
+                        <li class="list-group-item">Humedad</li>
+                    </ul>
+                </div>
+            
             </div>
         </div>
-        
-        <div id="fichas-tiempo" class="container">
-            a
-        </div>
+
+    </div>
+
+    <div id="footer" class="container py-3 my-4">
+            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                <li class="nav-item"><a href="http://185.60.40.210/2daw3/andoitzg/index.html" class="nav-link px-2 text-muted">Mi página</a></li>
+                <li class="nav-item"><a href="https://github.com/andogoiko" class="nav-link px-2 text-muted">Github</a></li>
+            </ul>
+            <p class="text-center text-muted">&copy; 2022, IES PLAIAUNDI BHI</p>
     </div>
 
 
