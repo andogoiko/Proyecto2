@@ -91,3 +91,18 @@ aMarcadores.forEach((poblacion) => {
     this.closePopup();
   });
 });
+
+/*drag & drop */
+
+$("#iTemperatura").draggable({ containment: "#cDragZone", revert: true });
+$("#iHumedad").draggable({ containment: "#cDragZone", revert: true });
+$("#iPrecipi").draggable({ containment: "#cDragZone", revert: true });
+$("#iViento").draggable({ containment: "#cDragZone", revert: true });
+
+$(".c-baliza").droppable({
+  drop: function (event, ui) {
+    let parametro = ui.draggable.attr("id");
+    console.log(parametro);
+    $(this).find("ul").append(`<li class="list-group-item"></li>`);
+  },
+});

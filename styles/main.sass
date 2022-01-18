@@ -1,13 +1,41 @@
 @import "../node_modules/bootstrap/scss/bootstrap"
 
+/* colores */
+$negrol: #0c0c0c
+$azulMarino: #1a2224
+$azulMarinoOpac: #061e25d5
+$negrolazulado: #110920
+$grisOscuro: #313131da
+$gris: #6d6b6bd3
+
+/* gradiantes */
+
+$mezcla1: $grisOscuro, $azulMarino, $grisOscuro
+
+$mezcla2: $grisOscuro, $azulMarinoOpac, $gris
+
+$mezcla3: $grisOscuro 0%,$grisOscuro 10%,$negrolazulado 25%,$negrolazulado 39%,$grisOscuro 79%,$grisOscuro 100%
+
+$mezcla4: $azulMarino, $gris, $negrol, $azulMarino, $gris, $negrol, $azulMarino, $gris, $negrol
+
+$mezcla5: $negrol 0%,$negrol 10%,$negrolazulado 25%,$negrolazulado 39%,$azulMarino 79%,$azulMarino 100%
+
+@mixin gradient($direction, $list)
+    background: -webkit-linear-gradient($direction, $list)
+    background: -moz-linear-gradient($direction, $list)
+    background: -o-linear-gradient($direction, $list)
+    background: linear-gradient($direction, $list)
+
 body
 
-    background-color: white
-    width: 100vw
+    background-color: beige
+    width: calc( 100vw - 1rem )
     overflow-x: hidden
     height: 100vh
 
     #header
+
+        @include gradient(left, $mezcla2)
 
     #section
         #c-Visib
@@ -19,7 +47,7 @@ body
 
         #c-mapa
 
-            background-color: #1b1a1a
+            @include gradient(top, $mezcla5)
             box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.50)
 
             #c-filtros
@@ -42,9 +70,34 @@ body
                 height: 25rem
                 position: relative !important
 
+        #dTextDrag
+
         #cDragZone
 
-            background-color: green
+            #caja-parametros
+
+                img
+                    z-index: 99
+
+                #iTemperatura
+
+                    width: auto
+                    height: 50px
+
+                #iHumedad
+
+                    width: auto
+                    height: 50px
+
+                #iPrecipi
+
+                    width: auto
+                    height: 50px
+
+                #iViento
+
+                    width: auto
+                    height: 50px
 
             #c-loc-activas
 
@@ -58,10 +111,12 @@ body
             #fichas-tiempo
 
                 width: 100%
-                background-color: pink
+
                 margin: 0 auto
 
                 .card
                     padding: 0
 
     #footer
+
+        @include gradient(left, $mezcla1)

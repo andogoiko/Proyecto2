@@ -19,8 +19,8 @@
 
 <body>
 
-    <div id="header" class="container d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-        <span class="fs-1 text-center">Euskadi Temporalis Analysis</span>
+    <div id="header" class="container-fluid d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <span class="fs-1 text-center text-light">Euskadi Temporalis Analysis</span>
     </div>
 
     <div id="section" class="container-fluid d-flex align-items-center flex-column">
@@ -58,17 +58,23 @@
             
             <div id="map" class="container position-relative"></div>
         </div>
-        
-        <div id="cDragZone" class="container-fluid mt-5">
-            <div id="caja-parametros" class="container d-flex flex-row justify-content-between bg-danger">
-                a
+
+        <div id="dTextDrag" class="container mt-5 mb-1">
+            <span class="fs-5 text-center border-bottom">Parámetros añadibles:</span>
+        </div>
+        <div id="cDragZone" class="container-fluid ">
+            <div id="caja-parametros" class="container d-flex flex-row justify-content-around py-1 border border-dark rounded">
+                <img id="iTemperatura" class="img-fluid" src="images/temperatura.png" alt="">
+                <img id="iHumedad" class="img-fluid" src="images/humedad.png" alt="">
+                <img id="iPrecipi" class="img-fluid" src="images/precipitaciones.png" alt="">
+                <img id="iViento" class="img-fluid" src="images/viento.png" alt="">
             </div>
             
-            <div id="c-loc-activas" class="container mt-5 mb-1">
+            <div id="c-loc-activas" class="container d-flex align-items-center mt-5 mb-1">
                 <div id="drop-loc-activas" class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="loc-activas" data-bs-toggle="dropdown"
                         aria-expanded="false">
-                        Dropdown button
+                        Localidades activas
                     </button>
                     <ul id="lista-loc-activas" class="dropdown-menu" aria-labelledby="loc-activas">
                         <li><a class="dropdown-item" href="#">Action</a></li>
@@ -78,12 +84,15 @@
                         <li><a class="dropdown-item" href="#">Something else here</a></li>
                     </ul>
                 </div>
+                <div id="dMaxBalizas" class="container d-flex">
+                    <span class="fs-5 text-center ms-auto text-secondary">Máximo de localidades: </span>
+                </div>
             </div>
             
             <div id="fichas-tiempo" class="container d-flex row flex-wrap justify-content-around">
             
-                <div class="card" style="width: 18rem;">
-                    <div class="card-header">
+                <div class="card c-baliza" style="width: 18rem;">
+                    <div class="card-header text-center">
                         Featured
                     </div>
                     <ul class="list-group list-group-flush">
@@ -98,7 +107,7 @@
 
     </div>
 
-    <div id="footer" class="container py-3 my-4">
+    <div id="footer" class="container-fluid py-3 my-4">
             <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                 <li class="nav-item"><a href="http://185.60.40.210/2daw3/andoitzg/index.html" class="nav-link px-2 text-muted">Mi página</a></li>
                 <li class="nav-item"><a href="https://github.com/andogoiko" class="nav-link px-2 text-muted">Github</a></li>
