@@ -27,17 +27,33 @@ $mezcla5: $negrol 0%,$negrol 10%,$negrolazulado 25%,$negrolazulado 39%,$azulMari
     background: linear-gradient($direction, $list)
 
 body
-
+    margin: 0
+    padding: 0
     background-color: beige
-    width: calc( 100vw - 1rem )
+    width: 100vw
     overflow-x: hidden
     height: 100vh
+    min-height: 100vh
+    position: relative
+
+    #dAnyadirLoc
+
+        height: 100%
+        backdrop-filter: blur(6px)
+        z-index: 314159
+
+        #dMensajeAL
+
+            height: 250px
+            width: 400px
+            background-color: #f0ecec
 
     #header
 
         @include gradient(left, $mezcla2)
 
     #section
+
         #c-Visib
 
             background-color: black
@@ -59,10 +75,15 @@ body
                 #filtros
 
                     background: none
-                    border: none
+                    border: 2px solid #464343
+                    background-color: #ffffff7c
+                    color: black
 
                 #m-filtros
 
+                    border: 1px solid #464343ad
+                    background-color: #ffffffbd
+                    color: black
                     width: 100%
 
             #map
@@ -114,8 +135,9 @@ body
 
                 margin: 0 auto
 
-                .card
+                .c-baliza
                     padding: 0
+                    width: 18rem
 
     #footer
 

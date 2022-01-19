@@ -19,79 +19,86 @@
 
 <body>
 
-    <div id="header" class="container-fluid d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+    <div id="header" class="container-fluid d-flex flex-wrap justify-content-center py-3 border-bottom">
         <span class="fs-1 text-center text-light">Euskadi Temporalis Analysis</span>
     </div>
 
     <div id="section" class="container-fluid d-flex align-items-center flex-column">
-        
+
         <div id="c-Visib" class="container d-flex mt-5">
             <button id="bVisib" type="button" class="btn btn-light mt-1 mb-2 py-0 px-2 ms-auto">-</button>
         </div>
-        
+
         <div id="c-mapa" class="container pb-2 rounded-bottom">
             <div id="c-filtros" class="leaflet-control container position-absolute px-5 mx-auto start-0 end-0 mt-3">
                 <div id="drop-filtros" class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filtros" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filtros"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         Filtros
                     </button>
                     <div id="m-filtros" class="dropdown-menu mb-5" aria-labelledby="filtros">
-                        <div class="container d-flex">
-                            <select class="custom-select custom-select-sm">
-                                <option selected>Provincia...</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
-                            <select class="custom-select custom-select-sm">
-                                <option selected>Municipio...</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
-                            <button type="button" class="btn btn-success ms-auto">Filtrar</button>
+                        <div class="container d-flex justify-content-around">
+                            <div class="container-sm d-flex justify-content-center">
+                                <span class="fs-6 mt-1">Provincia:</span>
+                                <select id="sProvincias" class="custom-select custom-select-sm mx-1">
+                                    <option selected></option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                            <div class="container-sm d-flex justify-content-center">
+                                <span class="fs-6 mt-1">Localidad:</span>
+                                <select id="sLocalidades" class="custom-select custom-select-sm mx-1">
+                                    <option selected></option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                            </div>
+                            <div class="container d-flex">
+                                <button id="bFiltrado" type="button"
+                                    class="btn btn-sm btn-secondary ms-auto">Filtrar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div id="map" class="container position-relative"></div>
         </div>
+
+        
 
         <div id="dTextDrag" class="container mt-5 mb-1">
             <span class="fs-5 text-center border-bottom">Parámetros añadibles:</span>
         </div>
         <div id="cDragZone" class="container-fluid ">
-            <div id="caja-parametros" class="container d-flex flex-row justify-content-around py-1 border border-dark rounded">
+            <div id="caja-parametros"
+                class="container d-flex flex-row justify-content-around py-1 border border-dark rounded">
                 <img id="iTemperatura" class="img-fluid" src="images/temperatura.png" alt="">
                 <img id="iHumedad" class="img-fluid" src="images/humedad.png" alt="">
                 <img id="iPrecipi" class="img-fluid" src="images/precipitaciones.png" alt="">
                 <img id="iViento" class="img-fluid" src="images/viento.png" alt="">
             </div>
-            
-            <div id="c-loc-activas" class="container d-flex align-items-center mt-5 mb-1">
+
+            <div id="c-loc-activas" class="container d-flex align-items-center mt-5 mb-3">
                 <div id="drop-loc-activas" class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="loc-activas" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="loc-activas"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         Localidades activas
                     </button>
                     <ul id="lista-loc-activas" class="dropdown-menu" aria-labelledby="loc-activas">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><div class="dropdown-item container d-flex justify-content-between py-0"><span>uwu</span><div class="container d-flex bg-danger w-auto text-light"><span class="ms-auto">x</span></div></div></li>
                     </ul>
                 </div>
                 <div id="dMaxBalizas" class="container d-flex">
                     <span class="fs-5 text-center ms-auto text-secondary">Máximo de localidades: </span>
                 </div>
             </div>
-            
+
             <div id="fichas-tiempo" class="container d-flex row flex-wrap justify-content-around">
-            
-                <div class="card c-baliza" style="width: 18rem;">
+                <div id="d${marcador[0]._icon.id}" class="card c-baliza mt-3 ${marcador[0]._icon.id}">
                     <div class="card-header text-center">
                         Featured
                     </div>
@@ -101,18 +108,18 @@
                         <li class="list-group-item">Humedad</li>
                     </ul>
                 </div>
-            
             </div>
         </div>
 
     </div>
 
-    <div id="footer" class="container-fluid py-3 my-4">
-            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-                <li class="nav-item"><a href="http://185.60.40.210/2daw3/andoitzg/index.html" class="nav-link px-2 text-muted">Mi página</a></li>
-                <li class="nav-item"><a href="https://github.com/andogoiko" class="nav-link px-2 text-muted">Github</a></li>
-            </ul>
-            <p class="text-center text-muted">&copy; 2022, IES PLAIAUNDI BHI</p>
+    <div id="footer" class="container-fluid py-3 mt-4 align-self-end">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="http://185.60.40.210/2daw3/andoitzg/index.html"
+                    class="nav-link px-2 text-muted">Mi página</a></li>
+            <li class="nav-item"><a href="https://github.com/andogoiko" class="nav-link px-2 text-muted">Github</a></li>
+        </ul>
+        <p class="text-center text-muted">&copy; 2022, IES PLAIAUNDI BHI</p>
     </div>
 
 
