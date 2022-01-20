@@ -2,6 +2,8 @@ import L from "leaflet";
 
 /* variables varias*/
 
+var maxLoc = 4;
+var locActivas = 0;
 var infoMarker = [2];
 window.infoMarker = infoMarker;
 
@@ -100,14 +102,22 @@ $("#c-Visib")
       $("#c-Visib").removeAttr("id");
       $(this).html("+");
       $("#footer").addClass("fixed-bottom");
+      $("#section").css("padding-bottom", "180px");
     } else {
       $(this).removeClass("btn-dark");
       $(this).addClass("btn-light");
       $(this).parent().attr("id", "c-Visib");
       $(this).html("-");
       $("#footer").removeClass("fixed-bottom");
+      $("#section").css("padding-bottom", "0px");
     }
   });
+
+/* colocar el núm de máximas localizaciones */
+
+window.addEventListener("load", function (event) {
+  document.getElementById("sMaxBalizas").innerText += " " + maxLoc;
+});
 
 /* aviso para añadir localidad */
 
@@ -130,25 +140,56 @@ function alertLocalidad(marcador) {
 /* añadir localidad */
 
 function addLocalidad(marcador) {
-  CloseAlertLocalidad();
+  if (locActivas >= maxLoc) {
+    document
+      .getElementById("dMensajeAL")
+      .querySelectorAll("*")
+      .forEach((n) => n.remove());
+    document.getElementById("dMensajeAL").innerHTML = `
+    <div class="container d-flex justify-content-center mt-5">
+      <span class="fs-6 text-center text-dark">Ha sobrepasado el límite de localizaciones, elimine alguna de las seleccionadas.</span>
+    </div>
+    <div class="container d-flex row justify-content-center h-auto w-auto my-4">
+      <button type="button" class="btn btn-light mt-3" onclick="CloseAlertLocalidad()">Cerrar</button>
+    </div>    
+    `;
+  } else if ($("#lista-loc-activas").find(`#${marcador[0]._icon.id}`).length) {
+    document
+      .getElementById("dMensajeAL")
+      .querySelectorAll("*")
+      .forEach((n) => n.remove());
+    document.getElementById("dMensajeAL").innerHTML = `
+    <div class="container d-flex justify-content-center mt-5">
+      <span class="fs-6 text-center text-dark">Ya ha obtenido los datos de esta localidad, por favor escoja de nuevo.</span>
+    </div>
+    <div class="container d-flex row justify-content-center h-auto w-auto my-4">
+      <button type="button" class="btn btn-light mt-3" onclick="CloseAlertLocalidad()">Cerrar</button>
+    </div>    
+    `;
+  } else {
+    CloseAlertLocalidad();
 
-  var cartaTiempo = `<div id="d${marcador[0]._icon.id}" class="card c-baliza mt-3 ${marcador[0]._icon.id}">
+    var cartaTiempo = `<div id="d${marcador[0]._icon.id}" class="card c-baliza mt-3 ${marcador[0]._icon.id}">
                     <div class="card-header text-center">
-                        Featured
+                        ${marcador[1]}
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item"></li>
                         <li class="list-group-item">Temperatura</li>
                         <li class="list-group-item">Humedad</li>
                     </ul>
-                </div>`;
+                </div>
+                `;
 
-  var itemListaLoc = `<li><a id="li${marcador[0]._icon.id}" class="dropdown-item ${marcador[0]._icon.id}" href="#">${marcador[1]}</a></li>`;
+    var itemListaLoc = `<li><div class="dropdown-item container d-flex justify-content-center mx-0 px-0 py-0" ><div class="container d-flex justify-content-center"><span class="fs-6 w-auto align-self-center">${marcador[1]}</span></div><div id="${marcador[0]._icon.id}" class="container position-absolute bg-danger w-auto end-0 text-light d-none dCerrar"><span>x</span></div></div></li>
+  `;
 
-  $("#fichas-tiempo").append(cartaTiempo);
-  $("#lista-loc-activas").append(itemListaLoc);
+    $("#fichas-tiempo").append(cartaTiempo);
+    $("#lista-loc-activas").append(itemListaLoc);
 
-  marcador[0].setIcon(iconMarkerSelect);
+    marcador[0].setIcon(iconMarkerSelect);
+    locActivas++;
+  }
 }
 
 window.addLocalidad = addLocalidad;
@@ -161,17 +202,51 @@ function CloseAlertLocalidad() {
 
 window.CloseAlertLocalidad = CloseAlertLocalidad;
 
-/*drag & drop */
+/* comportamiendos dinámicos lista localidades */
+
+$("#c-loc-activas").on("click", ".dropdown-item", function (e) {
+  return false;
+});
+
+$("#c-loc-activas").on("mouseenter", ".dropdown-item", function () {
+  $(this).find(".dCerrar").hide("slide", { direction: "right" }, 1);
+  $(this).find(".dCerrar").removeClass("d-none").show("slide", { direction: "left" }, 250);
+});
+
+$("#c-loc-activas").on("mouseleave", ".dropdown-item", function () {
+  $(this).find(".dCerrar").addClass("d-none").hide("slide", { direction: "right" }, 1);
+});
+
+/* función dinámica para eliminar las localidades escogidas */
+
+$("#c-loc-activas").on("click", ".dCerrar", function () {
+  locActivas--;
+
+  var idLocali = $(this).attr("id");
+
+  $(this).closest("li").remove();
+  $("#fichas-tiempo").find(`#d${idLocali}`).remove();
+
+  map.eachLayer(function (layer) {
+    if ($(layer._icon).attr("id") == idLocali) {
+      $(layer._icon).attr("src", "../images/marcador.png");
+    }
+  });
+});
+
+/*drag & drop dinámico*/
 
 $("#iTemperatura").draggable({ containment: "#cDragZone", revert: true });
 $("#iHumedad").draggable({ containment: "#cDragZone", revert: true });
 $("#iPrecipi").draggable({ containment: "#cDragZone", revert: true });
 $("#iViento").draggable({ containment: "#cDragZone", revert: true });
 
-$(".c-baliza").droppable({
-  drop: function (event, ui) {
-    let parametro = ui.draggable.attr("id");
-    console.log(parametro);
-    $(this).find("ul").append(`<li class="list-group-item"></li>`);
-  },
+$("#fichas-tiempo").on("DOMNodeInserted", ".c-baliza", function () {
+  $(this).droppable({
+    drop: function (event, ui) {
+      let parametro = ui.draggable.attr("id");
+      console.log(parametro);
+      $(this).find("ul").append(`<li class="list-group-item"></li>`);
+    },
+  });
 });
