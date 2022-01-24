@@ -101,15 +101,13 @@ $("#c-Visib")
       $(this).addClass("btn-dark");
       $("#c-Visib").removeAttr("id");
       $(this).html("+");
-      $("#footer").addClass("fixed-bottom");
-      $("#section").css("padding-bottom", "180px");
+      $("#section").css("flex-grow", "1");
     } else {
       $(this).removeClass("btn-dark");
       $(this).addClass("btn-light");
       $(this).parent().attr("id", "c-Visib");
       $(this).html("-");
-      $("#footer").removeClass("fixed-bottom");
-      $("#section").css("padding-bottom", "0px");
+      $("#section").css("flex-grow", "1");
     }
   });
 
