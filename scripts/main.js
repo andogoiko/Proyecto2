@@ -101,21 +101,27 @@ $("#c-Visib")
       $(this).addClass("btn-dark");
       $("#c-Visib").removeAttr("id");
       $(this).html("+");
-      $("#section").css("flex-grow", "1");
     } else {
       $(this).removeClass("btn-dark");
       $(this).addClass("btn-light");
       $(this).parent().attr("id", "c-Visib");
       $(this).html("-");
-      $("#section").css("flex-grow", "1");
     }
   });
+
+/* evitando el comportamiento por defecto del contenerdor de los filtros */
+
+$("#c-mapa").find("#c-filtros").on("click", "#drop-filtros", function (e) {
+  return false;
+});
 
 /* colocar el núm de máximas localizaciones */
 
 window.addEventListener("load", function (event) {
-  document.getElementById("sMaxBalizas").innerText += " " + maxLoc;
+  document.getElementById("sMaxBalizas").innerText = " " + maxLoc;
 });
+
+/* aumentar num max de localizaciones */
 
 /* aviso para añadir localidad */
 
@@ -168,18 +174,23 @@ function addLocalidad(marcador) {
     CloseAlertLocalidad();
 
     var cartaTiempo = `<div id="d${marcador[0]._icon.id}" class="card c-baliza mt-3 ${marcador[0]._icon.id}">
-                    <div class="card-header text-center">
+                    <div class="card-header text-center text-light bg-dark">
                         ${marcador[1]}
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"></li>
-                        <li class="list-group-item">Temperatura</li>
-                        <li class="list-group-item">Humedad</li>
+                        <li class="list-group-item bg-info"></li>
+                        <li id="lEstado" class="list-group-item text-center bg-info">HORA</li>
+                        <li class="list-group-item bg-info"></li>
+                        <div id="lTemperatura" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Temperatura</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
+                        <div id="lHumedad" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable d-none"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Humedad</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
+                        <div id="lViento" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable d-none"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Viento</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
+
                     </ul>
+                    <div class="card-footer bg-dark"></div>
                 </div>
                 `;
 
-    var itemListaLoc = `<li><div class="dropdown-item container d-flex justify-content-center mx-0 px-0 py-0" ><div class="container d-flex justify-content-center"><span class="fs-6 w-auto align-self-center">${marcador[1]}</span></div><div id="${marcador[0]._icon.id}" class="container position-absolute bg-danger w-auto end-0 text-light d-none dCerrar"><span>x</span></div></div></li>
+    var itemListaLoc = `<li><div class="dropdown-item container d-flex justify-content-center mx-0 px-0 py-0 position-relative" ><div class="container d-flex justify-content-center"><span class="fs-6 w-auto align-self-center">${marcador[1]}</span></div><div id="${marcador[0]._icon.id}" class="container position-absolute bg-danger w-auto end-0 text-light d-none dCerrar"><span>x</span></div></div></li>
   `;
 
     $("#fichas-tiempo").append(cartaTiempo);
@@ -207,12 +218,12 @@ $("#c-loc-activas").on("click", ".dropdown-item", function (e) {
 });
 
 $("#c-loc-activas").on("mouseenter", ".dropdown-item", function () {
-  $(this).find(".dCerrar").hide("slide", { direction: "right" }, 1);
-  $(this).find(".dCerrar").removeClass("d-none").show("slide", { direction: "left" }, 250);
+  $(this).find(".dCerrar").hide("slide", { direction: "left" }, 1);
+  $(this).find(".dCerrar").removeClass("d-none").show("slide", { direction: "right" }, 250);
 });
 
 $("#c-loc-activas").on("mouseleave", ".dropdown-item", function () {
-  $(this).find(".dCerrar").addClass("d-none").hide("slide", { direction: "right" }, 1);
+  $(this).find(".dCerrar").addClass("d-none").hide("slide", { direction: "left" }, 1);
 });
 
 /* función dinámica para eliminar las localidades escogidas */
@@ -227,24 +238,57 @@ $("#c-loc-activas").on("click", ".dCerrar", function () {
 
   map.eachLayer(function (layer) {
     if ($(layer._icon).attr("id") == idLocali) {
-      $(layer._icon).attr("src", "../images/marcador.png");
+      $(layer._icon).attr("src", "../images/marcador.png"); //asefdsrgtyhjuyhgdfasadfghyjgfds hola ando de mañana usa d-none para ocultar cositas con los filtros
+      
     }
   });
 });
 
-/*drag & drop dinámico*/
+/*fichas-tiempo comportamiento dinámico*/
+
+/* drag & drop */
 
 $("#iTemperatura").draggable({ containment: "#cDragZone", revert: true });
 $("#iHumedad").draggable({ containment: "#cDragZone", revert: true });
-$("#iPrecipi").draggable({ containment: "#cDragZone", revert: true });
 $("#iViento").draggable({ containment: "#cDragZone", revert: true });
 
 $("#fichas-tiempo").on("DOMNodeInserted", ".c-baliza", function () {
   $(this).droppable({
     drop: function (event, ui) {
       let parametro = ui.draggable.attr("id");
-      console.log(parametro);
-      $(this).find("ul").append(`<li class="list-group-item"></li>`);
+
+      switch (parametro) {
+        case "iTemperatura":
+          $(this).find("ul").find("#lTemperatura").removeClass("d-none");
+          break;
+        case "iHumedad":
+          $(this).find("ul").find("#lHumedad").removeClass("d-none");
+          break;
+        case "iViento":
+          $(this).find("ul").find("#lViento").removeClass("d-none");
+          break;
+      
+      }
+      
     },
   });
+
+  /* animación */
+
+  $(this).on("mouseenter", ".ocultable", function () {
+    $(this).find(".dCerrar").addClass("d-none").css("left", "0px");
+    $(this).find(".dCerrar").removeClass("d-none").animate({left: "230px"}, 500);  
+  });
+
+  $(this).on("mouseleave", ".ocultable", function () {
+    $(this).find(".dCerrar").addClass("d-none").css("left", "");
+  });
+
+
+  /* ocultar parámetro */
+  $(this).find(".ocultable").on("click", ".dCerrar", function () {
+
+    $(this).parent().addClass("d-none");
+  });
 });
+

@@ -78,7 +78,6 @@
                 class="container d-flex flex-row justify-content-around py-1 border border-dark rounded">
                 <img id="iTemperatura" class="img-fluid" src="images/temperatura.png" alt="">
                 <img id="iHumedad" class="img-fluid" src="images/humedad.png" alt="">
-                <img id="iPrecipi" class="img-fluid" src="images/precipitaciones.png" alt="">
                 <img id="iViento" class="img-fluid" src="images/viento.png" alt="">
             </div>
 
@@ -91,15 +90,16 @@
                     <ul id="lista-loc-activas" class="dropdown-menu" aria-labelledby="false">
                     </ul>
                 </div>
-                <div id="dMaxBalizas" class="container d-flex">
-                    <span id="sMaxBalizas" class="fs-5 text-center ms-auto text-secondary">Máximo de localidades:
-                    </span>
+                <div id="dMaxBalizas" class="container d-flex ms-auto justify-content-end">
+                    <span class="fs-6 text-center text-dark">Máx Localidades:</span>
+                    <button id="MenosBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">-</button>
+                    <span id="sMaxBalizas" class="fs-6 text-center text-dark"></span>
+                    <button id="PlusBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">+</button>
+
                 </div>
             </div>
 
-            <div id="fichas-tiempo" class="container d-flex row flex-wrap justify-content-around">
-
-            </div>
+            <div id="fichas-tiempo" class="container d-flex row flex-wrap justify-content-around"></div>
         </div>
 
     </div>

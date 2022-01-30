@@ -1,3 +1,7 @@
+/* retocando colores defualt de bootstrap */
+
+$info: #fff7fe
+    
 @import "../node_modules/bootstrap/scss/bootstrap"
 
 /* colores */
@@ -55,6 +59,8 @@ body
         @include gradient(left, $mezcla2)
 
     #section
+
+        flex-grow: 1
 
         #c-Visib
 
@@ -126,10 +132,16 @@ body
 
                 padding: 0
 
+                #dMaxBalizas
+
+                    .controlLoc
+                        width: 30px 
+
             #lista-loc-activas
 
                 max-height: 100px
                 overflow-y: auto
+                overflow-x: hidden
 
                 .dropdown-item:active
                     background-color: gray
@@ -143,6 +155,7 @@ body
                 .c-baliza
                     padding: 0
                     width: 18rem
+                    height: fit-content
 
     #footer
 
