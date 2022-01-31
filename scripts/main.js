@@ -44,50 +44,47 @@ iconMarkerSelect = L.icon({
   iconSize: [41, 41],
 });
 
-/** añadiendo marcadores */
+GetLocalidadesAPI();
 
-var aMarcadores = [
-  { sPoblacion: "IRUN", douLatitud: 43.3383, douLongitud: -1.78921 },
-  { sPoblacion: "ERRENTERIA", douLatitud: 43.3128, douLongitud: -1.89963 },
-  {
-    sPoblacion: "DONOSTIA/SAN SEBASTIÁN",
-    douLatitud: 43.31283,
-    douLongitud: -1.97499,
-  },
-  { sPoblacion: "HONDARRIBIA", douLatitud: 43.3625, douLongitud: -1.7915 },
-];
+/* fetch que obtiene las localidades almacenadas en la base de datos */
 
-aMarcadores.forEach((poblacion) => {
-  var marcador = L.marker([poblacion.douLatitud, poblacion.douLongitud], { icon: iconMarker }).addTo(map);
+function GetLocalidadesAPI() {
+  fetch("https://localhost:5001/api/Localidades")
+    .then((response) => response.json())
+    .then((aMarcadores) => {
+      aMarcadores.forEach((poblacion) => {
+        var marcador = L.marker([poblacion.latitud, poblacion.longitud], { icon: iconMarker }).addTo(map);
 
-  /* limpiando el formato de las localidades para usarlas de id */
+        /* limpiando el formato de las localidades para usarlas de id */
 
-  marcador._icon.id = `mark${poblacion.sPoblacion
-    .replace(/\s+/g, "")
-    .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")}`;
+        marcador._icon.id = `mark${poblacion.localidad
+          .replace(/\s+/g, "")
+          .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")}`;
 
-  /* al clicar en un marcador se abrira un aviso para añadir o no la localidad */
+        /* al clicar en un marcador se abrira un aviso para añadir o no la localidad */
 
-  marcador.on("click", (e) => {
-    infoMarker[0] = marcador;
-    infoMarker[1] = e.target.getPopup().getContent();
-    alertLocalidad(infoMarker);
-  });
+        marcador.on("click", (e) => {
+          infoMarker[0] = marcador;
+          infoMarker[1] = e.target.getPopup().getContent();
+          alertLocalidad(infoMarker);
+        });
 
-  /* añadiendo popups */
+        /* añadiendo popups */
 
-  marcador.bindPopup(`<span>${poblacion.sPoblacion}</span>`, { closeButton: false, maxWidth: "auto", offset: [1, -12] });
+        marcador.bindPopup(`<span>${poblacion.localidad}</span>`, { closeButton: false, maxWidth: "auto", offset: [1, -12] });
 
-  marcador.on("mouseover", function (e) {
-    this.openPopup();
-  });
+        marcador.on("mouseover", function (e) {
+          this.openPopup();
+        });
 
-  marcador.on("mouseout", function (e) {
-    this.closePopup();
-  });
-});
+        marcador.on("mouseout", function (e) {
+          this.closePopup();
+        });
+      });
+    });
+}
 
 /* alternar visibilidad del mapa */
 
@@ -111,9 +108,11 @@ $("#c-Visib")
 
 /* evitando el comportamiento por defecto del contenerdor de los filtros */
 
-$("#c-mapa").find("#c-filtros").on("click", "#drop-filtros", function (e) {
-  return false;
-});
+$("#c-mapa")
+  .find("#c-filtros")
+  .on("click", "#drop-filtros", function (e) {
+    return false;
+  });
 
 /* colocar el núm de máximas localizaciones */
 
@@ -122,6 +121,31 @@ window.addEventListener("load", function (event) {
 });
 
 /* aumentar num max de localizaciones */
+
+$("#dMaxBalizas").on("click", "#MenosBal", function (e) {
+  if (locActivas > maxLoc - 1 || maxLoc - 1 <= 0) {
+    var sHtml = `<div id="dAnyadirLoc" class="container-fluid d-flex justify-content-center align-items-center position-fixed">
+                    <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-5 border-dark">
+                      <div class="container d-flex justify-content-center mt-5">
+                        <span class="fs-6 text-center text-dark">El máximo de localidades no puede ser menor a 0, o que las activas actualmente.</span>
+                      </div>
+                      <div class="container d-flex row justify-content-center h-auto w-auto my-4">
+                        <button type="button" class="btn btn-light mt-3" onclick="CloseAlertLocalidad()">Cerrar</button>
+                      </div>
+                    </div>
+                  </div>    `;
+
+    document.getElementById("header").insertAdjacentHTML("beforebegin", sHtml);
+  } else {
+    maxLoc--;
+    document.getElementById("sMaxBalizas").innerText = " " + maxLoc;
+  }
+});
+
+$("#dMaxBalizas").on("click", "#PlusBal", function (e) {
+  maxLoc++;
+  document.getElementById("sMaxBalizas").innerText = " " + maxLoc;
+});
 
 /* aviso para añadir localidad */
 
@@ -182,7 +206,7 @@ function addLocalidad(marcador) {
                         <li id="lEstado" class="list-group-item text-center bg-info">HORA</li>
                         <li class="list-group-item bg-info"></li>
                         <div id="lTemperatura" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Temperatura</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
-                        <div id="lHumedad" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable d-none"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Humedad</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
+                        <div id="lHumedad" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Humedad</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
                         <div id="lViento" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable d-none"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Viento</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
 
                     </ul>
@@ -202,6 +226,26 @@ function addLocalidad(marcador) {
 }
 
 window.addLocalidad = addLocalidad;
+
+/* Función que recoge los datos de la baliza seleccionada */
+
+function GetMediciones(string) {
+  fetch(`https://localhost:5001/api/TemporalLocalidades/${string}}`)
+    .then((response) => response.json())
+    .then((aMediciones) => {
+      let cleanLoc =
+        "d" +
+        string
+          .replace(/\s+/g, "")
+          .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
+      $(`#${cleanLoc}`).find("ul").find("#lTemperatura").find(".container").find("span").innerHTML;
+    });
+}
+
+/* función que observa si hay localidades activas y las actualiza */
 
 /* cerrar aviso añadir localidad */
 
@@ -239,7 +283,6 @@ $("#c-loc-activas").on("click", ".dCerrar", function () {
   map.eachLayer(function (layer) {
     if ($(layer._icon).attr("id") == idLocali) {
       $(layer._icon).attr("src", "../images/marcador.png"); //asefdsrgtyhjuyhgdfasadfghyjgfds hola ando de mañana usa d-none para ocultar cositas con los filtros
-      
     }
   });
 });
@@ -248,9 +291,21 @@ $("#c-loc-activas").on("click", ".dCerrar", function () {
 
 /* drag & drop */
 
-$("#iTemperatura").draggable({ containment: "#cDragZone", revert: true });
-$("#iHumedad").draggable({ containment: "#cDragZone", revert: true });
-$("#iViento").draggable({ containment: "#cDragZone", revert: true });
+$("#iTemperatura").draggable({
+  containment: "#cDragZone",
+  helper: "clone",
+  revert: false,
+});
+$("#iHumedad").draggable({
+  containment: "#cDragZone",
+  helper: "clone",
+  revert: false,
+});
+$("#iViento").draggable({
+  containment: "#cDragZone",
+  helper: "clone",
+  revert: false,
+});
 
 $("#fichas-tiempo").on("DOMNodeInserted", ".c-baliza", function () {
   $(this).droppable({
@@ -267,9 +322,7 @@ $("#fichas-tiempo").on("DOMNodeInserted", ".c-baliza", function () {
         case "iViento":
           $(this).find("ul").find("#lViento").removeClass("d-none");
           break;
-      
       }
-      
     },
   });
 
@@ -277,18 +330,17 @@ $("#fichas-tiempo").on("DOMNodeInserted", ".c-baliza", function () {
 
   $(this).on("mouseenter", ".ocultable", function () {
     $(this).find(".dCerrar").addClass("d-none").css("left", "0px");
-    $(this).find(".dCerrar").removeClass("d-none").animate({left: "230px"}, 500);  
+    $(this).find(".dCerrar").removeClass("d-none").animate({ left: "230px" }, 150);
   });
 
   $(this).on("mouseleave", ".ocultable", function () {
     $(this).find(".dCerrar").addClass("d-none").css("left", "");
   });
 
-
   /* ocultar parámetro */
-  $(this).find(".ocultable").on("click", ".dCerrar", function () {
-
-    $(this).parent().addClass("d-none");
-  });
+  $(this)
+    .find(".ocultable")
+    .on("click", ".dCerrar", function () {
+      $(this).parent().addClass("d-none");
+    });
 });
-
