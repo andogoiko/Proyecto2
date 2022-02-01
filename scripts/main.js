@@ -63,11 +63,11 @@ function GetLocalidadesAPI() {
 
         /* limpiando el formato de las localidades para usarlas de id */
 
-        marcador._icon.id = `mark${poblacion.localidad
-          .replace(/\s+/g, "")
-          .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")}`;
+        marcador._icon.id = `mark${poblacion.idBaliza}`;
+
+        /* añadiendo la clase de su provincia para utilizarlo en los filtros a futuro */
+
+        marcador._icon.classList.add(poblacion.provincia);
 
         /* al clicar en un marcador se abrira un aviso para añadir o no la localidad */
 
@@ -206,29 +206,30 @@ function addLocalidad(marcador) {
   } else {
     CloseAlertLocalidad();
 
-    var cartaTiempo = `<div id="d${marcador[0]._icon.id}" class="card c-baliza mt-3 ${marcador[0]._icon.id}">
+    var cartaTiempo = `<div id="d${(marcador[0]._icon.id).substring(4)}" class="card c-baliza mt-3 ${(marcador[0]._icon.id).substring(4)}">
                     <div class="card-header text-center text-light bg-dark">
                         ${marcador[1]}
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item bg-info"></li>
-                        <li id="lEstado" class="list-group-item text-center bg-info">HORA</li>
+                        <div id="lEstado" class="list-group-item d-flex flex-column justify-content-center align-items-center text-center bg-info"><img class="img-fluid iEstado al" src="" alt=""><span class="sHora"></span></div>
                         <li class="list-group-item bg-info"></li>
-                        <div id="lTemperatura" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Temperatura</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
-                        <div id="lHumedad" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Humedad</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
-                        <div id="lViento" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable d-none"><div class="container d-flex px-3 justify-content-left"><span class="fs-6 w-auto align-self-left">Viento</span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
+                        <div id="lTemperatura" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable"><div class="container d-flex px-3 justify-content-left"><img class="img-fluid cITemperatura ps-1 pt-1 pe-2" src="images/temperatura.png" alt=""><span class="fs-6 w-auto align-self-left pe-4">Temperatura:</span><span class="fs-6 w-auto align-self-left sTemperatura"></span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
+                        <div id="lHumedad" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable"><div class="container d-flex px-3 justify-content-left"><img class="img-fluid cIHumedad pt-1 pe-1" src="images/humedad.png" alt=""><span class="fs-6 w-auto align-self-left pe-4">Humedad:</span><span class="fs-6 w-auto align-self-left ps-3 sHumedad"></span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
+                        <div id="lViento" class="container position-relative list-group-item bg-info d-flex justify-content-center px-0 py-2 mx-0 ocultable d-none"><div class="container d-flex px-3 justify-content-left"><img class="img-fluid cIViento pt-1 pe-2" src="images/viento.png" alt=""><span class="fs-6 w-auto align-self-left pe-5">Viento:</span><span  class="fs-6 w-auto align-self-left ps-3 sViento"></span></div><div class="container d-flex position-absolute bg-danger h-100 w-auto top-0 end-0 text-light d-none dCerrar"><span class="align-self-center">x</span></div></div>
 
                     </ul>
                     <div class="card-footer bg-dark"></div>
                 </div>
                 `;
 
-    var itemListaLoc = `<li><div class="dropdown-item container d-flex justify-content-center mx-0 px-0 py-0 position-relative" ><div class="container d-flex justify-content-center"><span class="fs-6 w-auto align-self-center">${marcador[1]}</span></div><div id="${marcador[0]._icon.id}" class="container position-absolute bg-danger w-auto end-0 text-light d-none dCerrar"><span>x</span></div></div></li>
+    var itemListaLoc = `<li><div class="dropdown-item container d-flex justify-content-center mx-0 px-0 py-0 position-relative" ><div class="container d-flex justify-content-center"><span class="fs-6 w-auto align-self-center">${marcador[1]}</span></div><div id="${(marcador[0]._icon.id).substring(4)}" class="container position-absolute bg-danger w-auto end-0 text-light d-none dCerrar"><span>x</span></div></div></li>
   `;
 
     $("#fichas-tiempo").append(cartaTiempo);
     $("#lista-loc-activas").append(itemListaLoc);
 
+    nowHora((marcador[0]._icon.id).substring(4));
     GetMediciones((marcador[0]._icon.id).substring(4));
 
     marcador[0].setIcon(iconMarkerSelect);
@@ -238,36 +239,39 @@ function addLocalidad(marcador) {
 
 window.addLocalidad = addLocalidad;
 
+/* función que observa si hay localidades activas y las actualiza */
+
 /* Función que recoge los datos de la baliza seleccionada */
 
 function GetMediciones(string) {
-
-  let thisLocalidad = "";
-
-  /* buscamos el nombre del marcador en el array para poder llamar a la API correctamente*/
-
-  aLocalidades.forEach(localidad => {
-
-    if(localidad.localidad.replace(/\s+/g, "")
-    .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") == string){
-      thisLocalidad = localidad.localidad;
-      console.log(`${localidad.localidad}`);
-    }
-    
-  });
-  var myHeaders = new Headers();
-  myHeaders.append('Content-Type','text/plain; charset=UTF-8');
-  fetch(`https://localhost:5001/api/TemporalLocalidades/${thisLocalidad}`)
+  fetch(`https://localhost:5001/api/TemporalLocalidades/${string}`)
     .then((response) => response.json())
     .then((aMediciones) => {
-      console.log(`${aMediciones.temperatura}`);
-      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lTemperatura").find(".container").find("span").innerHTML = "Temperatura: " + aMediciones.temperatura;
+
+      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lEstado").find(".iEstado").attr('src', `images/${aMediciones.estado}.png`)
+      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lTemperatura").find(".px-3").find(".sTemperatura").html(`${aMediciones.temperatura} ºC`);
+      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lHumedad").find(".px-3").find(".sHumedad").html(`${aMediciones.humedad} %`);
+      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lViento").find(".px-3").find(".sViento").html(`${aMediciones.velViento} m/s`);
     });
 }
 
-/* función que observa si hay localidades activas y las actualiza */
+/* función que devuelve la hora actual */
+
+function nowHora(localidad) {
+  let date = new Date(); 
+  let hh = date.getHours();
+  let mm = date.getMinutes();
+  let ss = date.getSeconds();
+
+   hh = (hh < 10) ? "0" + hh : hh;
+   mm = (mm < 10) ? "0" + mm : mm;
+   ss = (ss < 10) ? "0" + ss : ss;
+    
+   let hora = hh + ":" + mm + ":" + ss;
+
+   $("#fichas-tiempo").find(`#d${localidad}`).find("ul").find("#lEstado").find(".sHora").html(`${hora}`); 
+  let t = setTimeout(function(){ nowHora(localidad) }, 1000);
+}
 
 /* cerrar aviso añadir localidad */
 
@@ -303,13 +307,12 @@ $("#c-loc-activas").on("click", ".dCerrar", function () {
   $("#fichas-tiempo").find(`#d${idLocali}`).remove();
 
   map.eachLayer(function (layer) {
-    if ($(layer._icon).attr("id") == idLocali) {
+
+    if ($(layer._icon).attr("id") == `mark${idLocali}`) {
       $(layer._icon).attr("src", "../images/marcador.png"); //asefdsrgtyhjuyhgdfasadfghyjgfds hola ando de mañana usa d-none para ocultar cositas con los filtros
     }
   });
 });
-
-/*fichas-tiempo comportamiento dinámico*/
 
 /* drag & drop */
 
