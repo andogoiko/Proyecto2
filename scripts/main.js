@@ -6,6 +6,7 @@ var maxLoc = 4;
 var locActivas = 0;
 var infoMarker = [2];
 window.infoMarker = infoMarker;
+var aLocalidades;
 
 /* añadiendo una ubicación de inicio al mapa */
 
@@ -44,15 +45,20 @@ iconMarkerSelect = L.icon({
   iconSize: [41, 41],
 });
 
-GetLocalidadesAPI();
+aLocalidades = GetLocalidadesAPI();
 
 /* fetch que obtiene las localidades almacenadas en la base de datos */
 
 function GetLocalidadesAPI() {
+
+  /* un array temporal para poder devolver los datos recogidos y reutilizarlos */
+  let aLoc = [];
+
   fetch("https://localhost:5001/api/Localidades")
     .then((response) => response.json())
     .then((aMarcadores) => {
       aMarcadores.forEach((poblacion) => {
+        aLoc.push(poblacion);
         var marcador = L.marker([poblacion.latitud, poblacion.longitud], { icon: iconMarker }).addTo(map);
 
         /* limpiando el formato de las localidades para usarlas de id */
@@ -83,7 +89,10 @@ function GetLocalidadesAPI() {
           this.closePopup();
         });
       });
+    
+    
     });
+    return aLoc;
 }
 
 /* alternar visibilidad del mapa */
@@ -220,6 +229,8 @@ function addLocalidad(marcador) {
     $("#fichas-tiempo").append(cartaTiempo);
     $("#lista-loc-activas").append(itemListaLoc);
 
+    GetMediciones((marcador[0]._icon.id).substring(4));
+
     marcador[0].setIcon(iconMarkerSelect);
     locActivas++;
   }
@@ -230,18 +241,29 @@ window.addLocalidad = addLocalidad;
 /* Función que recoge los datos de la baliza seleccionada */
 
 function GetMediciones(string) {
-  fetch(`https://localhost:5001/api/TemporalLocalidades/${string}}`)
+
+  let thisLocalidad = "";
+
+  /* buscamos el nombre del marcador en el array para poder llamar a la API correctamente*/
+
+  aLocalidades.forEach(localidad => {
+
+    if(localidad.localidad.replace(/\s+/g, "")
+    .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") == string){
+      thisLocalidad = localidad.localidad;
+      console.log(`${localidad.localidad}`);
+    }
+    
+  });
+  var myHeaders = new Headers();
+  myHeaders.append('Content-Type','text/plain; charset=UTF-8');
+  fetch(`https://localhost:5001/api/TemporalLocalidades/${thisLocalidad}`)
     .then((response) => response.json())
     .then((aMediciones) => {
-      let cleanLoc =
-        "d" +
-        string
-          .replace(/\s+/g, "")
-          .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "");
-
-      $(`#${cleanLoc}`).find("ul").find("#lTemperatura").find(".container").find("span").innerHTML;
+      console.log(`${aMediciones.temperatura}`);
+      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lTemperatura").find(".container").find("span").innerHTML = "Temperatura: " + aMediciones.temperatura;
     });
 }
 
