@@ -35,12 +35,16 @@ body
     flex-direction: column
     margin: 0
     padding: 0
-    background-color: beige
     width: 100vw
     overflow-x: hidden
     height: 100vh
     min-height: 100vh
     position: relative
+    background-image: url(../images/background.jpg)
+    -webkit-background-size: cover
+    -moz-background-size: cover
+    -o-background-size: cover
+    background-size: cover
 
     #dAnyadirLoc
 
@@ -54,56 +58,60 @@ body
             width: 400px
             background-color: #f0ecec
 
-    #header
+    #dHeader
 
         @include gradient(left, $mezcla2)
 
-    #section
+    #dSection
 
         flex-grow: 1
 
-        #c-Visib
+        #dVisib
 
             background-color: black
             box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.65)
 
-            #bVisib
-
-        #c-mapa
+        #dMapa
 
             @include gradient(top, $mezcla5)
             box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.50)
 
-            #c-filtros
+            #dFiltros
 
                 padding: 0
 
-            #drop-filtros
+            #dDropFiltros
 
-                #filtros
+                #bFiltros
 
                     background: none
                     border: 2px solid #464343
                     background-color: #ffffff7c
                     color: black
 
-                #m-filtros
+                #dMenuFiltros
 
                     border: 1px solid #464343ad
                     background-color: #ffffffbd
                     color: black
                     width: 100%
 
-            #map
+                    #sProvincias
+                        max-width: 65px
+
+                    #sLocalidades
+                        max-width: 65px
+
+            #dMap
 
                 height: 25rem
                 position: relative !important
 
-        #dTextDrag
+        #dDragZone
 
-        #cDragZone
+            #dParametros
 
-            #caja-parametros
+                backdrop-filter: blur(3px)
 
                 img
                     z-index: 99
@@ -124,7 +132,7 @@ body
                     width: auto
                     height: 50px !important
 
-            #c-loc-activas
+            #dLocActivas
 
                 padding: 0
 
@@ -133,7 +141,7 @@ body
                     .controlLoc
                         width: 30px
 
-            #lista-loc-activas
+            #ulLocActivas
 
                 max-height: 100px
                 overflow-y: auto
@@ -142,7 +150,7 @@ body
                 .dropdown-item:active
                     background-color: gray
 
-            #fichas-tiempo
+            #dFichasTiempo
 
                 width: 100%
 
@@ -179,9 +187,7 @@ body
 
                     .sViento
                         margin-left: 1px
-                    
-                    
 
-    #footer
+    #dFooter
 
         @include gradient(left, $mezcla1)

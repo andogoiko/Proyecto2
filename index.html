@@ -19,7 +19,7 @@
 
 <body>
 
-    <div id="header" class="container-fluid d-flex flex-column py-3 border-bottom">
+    <div id="dHeader" class="container-fluid d-flex flex-column py-3 border-bottom">
         <span class="fs-1 text-center text-light">Euskadi Temporalis Analysis</span>
         <div class="container-fluid d-flex justify-content-center p-0">
             <button id="bInicSes" type="button" class="btn btn-light fs-6 border-0 text-light bg-transparent">Iniciar Sesión (API)</button>
@@ -27,37 +27,31 @@
         </div>
     </div>
 
-    <div id="section" class="container-fluid d-flex align-items-center flex-column">
+    <div id="dSection" class="container-fluid d-flex align-items-center flex-column">
 
-        <div id="c-Visib" class="container d-flex mt-5">
+        <div id="dVisib" class="container d-flex mt-5">
             <button id="bVisib" type="button" class="btn btn-light mt-1 mb-2 py-0 px-2 ms-auto">-</button>
         </div>
 
-        <div id="c-mapa" class="container pb-2 rounded-bottom">
-            <div id="c-filtros" class="leaflet-control container position-absolute px-5 mx-auto start-0 end-0 mt-3">
-                <div id="drop-filtros" class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filtros"
+        <div id="dMapa" class="container pb-2 rounded-bottom">
+            <div id="dFiltros" class="leaflet-control container position-absolute px-5 mx-auto start-0 end-0 mt-3">
+                <div id="dDropFiltros" class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="bFiltros"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Filtros
                     </button>
-                    <div id="m-filtros" class="dropdown-menu mb-5" aria-labelledby="filtros">
+                    <div id="dMenuFiltros" class="dropdown-menu mb-5" aria-labelledby="bFiltros">
                         <div class="container d-flex justify-content-around">
                             <div class="container-sm d-flex justify-content-center">
                                 <span class="fs-6 mt-1">Provincia:</span>
                                 <select id="sProvincias" class="custom-select custom-select-sm mx-1">
                                     <option selected></option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
                                 </select>
                             </div>
                             <div class="container-sm d-flex justify-content-center">
                                 <span class="fs-6 mt-1">Localidad:</span>
                                 <select id="sLocalidades" class="custom-select custom-select-sm mx-1">
                                     <option selected></option>
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
                                 </select>
                             </div>
                             <div class="container d-flex">
@@ -69,7 +63,7 @@
                 </div>
             </div>
 
-            <div id="map" class="container position-relative"></div>
+            <div id="dMap" class="container position-relative"></div>
         </div>
 
 
@@ -77,38 +71,38 @@
         <div id="dTextDrag" class="container mt-5 mb-1">
             <span class="fs-5 text-center border-bottom">Parámetros añadibles:</span>
         </div>
-        <div id="cDragZone" class="container-fluid ">
-            <div id="caja-parametros"
+        <div id="dDragZone" class="container-fluid ">
+            <div id="dParametros"
                 class="container d-flex flex-row justify-content-around py-1 border border-dark rounded">
                 <img id="iTemperatura" class="img-fluid" src="images/temperatura.png" alt="">
                 <img id="iHumedad" class="img-fluid" src="images/humedad.png" alt="">
                 <img id="iViento" class="img-fluid" src="images/viento.png" alt="">
             </div>
 
-            <div id="c-loc-activas" class="container d-flex align-items-center mt-5 mb-3">
-                <div id="drop-loc-activas" class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="loc-activas"
+            <div id="dLocActivas" class="container d-flex align-items-center mt-5 mb-3">
+                <div id="dDropLocActivas" class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="bLocActivas"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Localidades activas
                     </button>
-                    <ul id="lista-loc-activas" class="dropdown-menu" aria-labelledby="false">
+                    <ul id="ulLocActivas" class="dropdown-menu" aria-labelledby="false">
                     </ul>
                 </div>
                 <div id="dMaxBalizas" class="container d-flex ms-auto justify-content-end">
                     <span class="fs-6 text-center text-dark">Máx Localidades:</span>
-                    <button id="MenosBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">-</button>
+                    <button id="bMenosBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">-</button>
                     <span id="sMaxBalizas" class="fs-6 text-center text-dark"></span>
-                    <button id="PlusBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">+</button>
+                    <button id="bPlusBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">+</button>
 
                 </div>
             </div>
 
-            <div id="fichas-tiempo" class="container d-flex row flex-wrap justify-content-around"></div>
+            <div id="dFichasTiempo" class="container d-flex row flex-wrap justify-content-around"></div>
         </div>
 
     </div>
 
-    <div id="footer" class="container-fluid py-3 mt-4 align-self-end">
+    <div id="dFooter" class="container-fluid py-3 mt-4 align-self-end">
         <ul class="nav justify-content-center border-bottom pb-3 mb-3">
             <li class="nav-item"><a href="http://185.60.40.210/2daw3/andoitzg/index.html"
                     class="nav-link px-2 text-muted">Mi página</a></li>

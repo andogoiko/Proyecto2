@@ -10,7 +10,7 @@ var aLocalidades;
 
 /* añadiendo una ubicación de inicio al mapa */
 
-var map = L.map("map", {
+var map = L.map("dMap", {
   zoomControl: false,
 }).setView([43.0756299, -2.2236667], 8);
 
@@ -50,9 +50,9 @@ aLocalidades = GetLocalidadesAPI();
 /* fetch que obtiene las localidades almacenadas en la base de datos */
 
 function GetLocalidadesAPI() {
-
   /* un array temporal para poder devolver los datos recogidos y reutilizarlos */
   let aLoc = [];
+  var setProvincias = new Set();
 
   fetch("https://localhost:5001/api/Localidades")
     .then((response) => response.json())
@@ -67,7 +67,14 @@ function GetLocalidadesAPI() {
 
         /* añadiendo la clase de su provincia para utilizarlo en los filtros a futuro */
 
+        let pobLimpia = poblacion.localidad
+          .replace(/\s+/g, "")
+          .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
         marcador._icon.classList.add(poblacion.provincia);
+        marcador._icon.classList.add(`${pobLimpia}`);
 
         /* al clicar en un marcador se abrira un aviso para añadir o no la localidad */
 
@@ -88,38 +95,80 @@ function GetLocalidadesAPI() {
         marcador.on("mouseout", function (e) {
           this.closePopup();
         });
+
+        /* añadiendo los las provincias y pueblos a los filtros */
+
+        if (!setProvincias.has(poblacion.provincia)) {
+          setProvincias.add(poblacion.provincia);
+          $(`#sProvincias`).append(`<option value="${poblacion.provincia}">${poblacion.provincia}</option>`);
+        }
+
+        $(`#sLocalidades`).append(`<option class="${poblacion.provincia} ${pobLimpia}" value="${poblacion.localidad}">${poblacion.localidad}</option>`);
+
+        $(`#sProvincias`);
       });
-    
-    
     });
-    return aLoc;
+  return aLoc;
 }
+
+/* funcionamiento de los filtros */
+
+/* filtros provincias */
+
+$(`#sProvincias`).on("change", function (e) {
+  let provincia = this.value;
+
+  /* volvemos a activar todos por si se habia tocado un filtro */
+
+  $("#sLocalidades")
+    .find("option")
+    .each(function () {
+      $(this).removeClass("d-none");
+    });
+
+  if (provincia.length != 0) {
+    $("#sLocalidades")
+      .find("option")
+      .each(function () {
+        if (!$(this).hasClass(provincia)) {
+          $(this).addClass("d-none");
+        }
+      });
+  }
+});
+
+/* filtros localidad */
+
+$(`#sLocalidades`).on("change", function (e) {
+  let localidad = this.value;
+  let aLocFiltros = new Array();
+});
 
 /* alternar visibilidad del mapa */
 
-$("#c-Visib")
+$("#dVisib")
   .find("#bVisib")
   .click(function () {
-    $("#c-mapa").toggle();
+    $("#dMapa").toggle();
 
     if ($(this).parent().attr("id")) {
       $(this).removeClass("btn-light");
       $(this).addClass("btn-dark");
-      $("#c-Visib").removeAttr("id");
+      $("#dVisib").removeAttr("id");
       $(this).html("+");
     } else {
       $(this).removeClass("btn-dark");
       $(this).addClass("btn-light");
-      $(this).parent().attr("id", "c-Visib");
+      $(this).parent().attr("id", "dVisib");
       $(this).html("-");
     }
   });
 
 /* evitando el comportamiento por defecto del contenerdor de los filtros */
 
-$("#c-mapa")
-  .find("#c-filtros")
-  .on("click", "#drop-filtros", function (e) {
+$("#dMapa")
+  .find("#dFiltros")
+  .on("click", "#dDropFiltros", function (e) {
     return false;
   });
 
@@ -131,7 +180,7 @@ window.addEventListener("load", function (event) {
 
 /* aumentar num max de localizaciones */
 
-$("#dMaxBalizas").on("click", "#MenosBal", function (e) {
+$("#dMaxBalizas").on("click", "#bMenosBal", function (e) {
   if (locActivas > maxLoc - 1 || maxLoc - 1 <= 0) {
     var sHtml = `<div id="dAnyadirLoc" class="container-fluid d-flex justify-content-center align-items-center position-fixed">
                     <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-5 border-dark">
@@ -144,14 +193,14 @@ $("#dMaxBalizas").on("click", "#MenosBal", function (e) {
                     </div>
                   </div>    `;
 
-    document.getElementById("header").insertAdjacentHTML("beforebegin", sHtml);
+    document.getElementById("dHeader").insertAdjacentHTML("beforebegin", sHtml);
   } else {
     maxLoc--;
     document.getElementById("sMaxBalizas").innerText = " " + maxLoc;
   }
 });
 
-$("#dMaxBalizas").on("click", "#PlusBal", function (e) {
+$("#dMaxBalizas").on("click", "#bPlusBal", function (e) {
   maxLoc++;
   document.getElementById("sMaxBalizas").innerText = " " + maxLoc;
 });
@@ -171,7 +220,7 @@ function alertLocalidad(marcador) {
         </div>
     </div>`;
 
-  document.getElementById("header").insertAdjacentHTML("beforebegin", sHtml);
+  document.getElementById("dHeader").insertAdjacentHTML("beforebegin", sHtml);
 }
 
 /* añadir localidad */
@@ -190,7 +239,7 @@ function addLocalidad(marcador) {
       <button type="button" class="btn btn-light mt-3" onclick="CloseAlertLocalidad()">Cerrar</button>
     </div>    
     `;
-  } else if ($("#lista-loc-activas").find(`#${marcador[0]._icon.id}`).length) {
+  } else if ($("#ulLocActivas").find(`#dList${marcador[0]._icon.id.substring(4)}`).length) {
     document
       .getElementById("dMensajeAL")
       .querySelectorAll("*")
@@ -206,7 +255,7 @@ function addLocalidad(marcador) {
   } else {
     CloseAlertLocalidad();
 
-    var cartaTiempo = `<div id="d${(marcador[0]._icon.id).substring(4)}" class="card c-baliza mt-3 ${(marcador[0]._icon.id).substring(4)}">
+    var cartaTiempo = `<div id="d${marcador[0]._icon.id.substring(4)}" class="card c-baliza mt-3 ${marcador[0]._icon.id.substring(4)}">
                     <div class="card-header text-center text-light bg-dark">
                         ${marcador[1]}
                     </div>
@@ -223,16 +272,35 @@ function addLocalidad(marcador) {
                 </div>
                 `;
 
-    var itemListaLoc = `<li><div class="dropdown-item container d-flex justify-content-center mx-0 px-0 py-0 position-relative" ><div class="container d-flex justify-content-center"><span class="fs-6 w-auto align-self-center">${marcador[1]}</span></div><div id="${(marcador[0]._icon.id).substring(4)}" class="container position-absolute bg-danger w-auto end-0 text-light d-none dCerrar"><span>x</span></div></div></li>
+    var itemListaLoc = `<li><div class="dropdown-item container d-flex justify-content-center mx-0 px-0 py-0 position-relative" ><div class="container d-flex justify-content-center"><span class="fs-6 w-auto align-self-center">${
+      marcador[1]
+    }</span></div><div id="dList${marcador[0]._icon.id.substring(4)}" class="container position-absolute bg-danger w-auto end-0 text-light d-none dCerrar"><span>x</span></div></div></li>
   `;
 
-    $("#fichas-tiempo").append(cartaTiempo);
-    $("#lista-loc-activas").append(itemListaLoc);
+    $("#dFichasTiempo").append(cartaTiempo);
+    $("#ulLocActivas").append(itemListaLoc);
 
-    nowHora((marcador[0]._icon.id).substring(4));
-    GetMediciones((marcador[0]._icon.id).substring(4));
+    nowHora(marcador[0]._icon.id.substring(4));
+    GetMediciones(marcador[0]._icon.id.substring(4));
+
+    /* obtenemos las clases que tiene, ya que al cambiar el icono las pierde y las necesitamos para el filtrado */
+
+    var classList = $(`#${marcador[0]._icon.id}`).attr("class").split(/\s+/);
+
+    /* cambiamos el icono */
 
     marcador[0].setIcon(iconMarkerSelect);
+
+    /* eliminamos las clases nuevas */
+
+    $(`#${marcador[0]._icon.id}`).removeClass();
+
+    /* le colocamos las antiguas clases */
+
+    for (var i = 0; i < classList.length; i++) {
+      $(`#${marcador[0]._icon.id}`).addClass(classList[i]);
+    }
+
     locActivas++;
   }
 }
@@ -247,30 +315,31 @@ function GetMediciones(string) {
   fetch(`https://localhost:5001/api/TemporalLocalidades/${string}`)
     .then((response) => response.json())
     .then((aMediciones) => {
-
-      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lEstado").find(".iEstado").attr('src', `images/${aMediciones.estado}.png`)
-      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lTemperatura").find(".px-3").find(".sTemperatura").html(`${aMediciones.temperatura} ºC`);
-      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lHumedad").find(".px-3").find(".sHumedad").html(`${aMediciones.humedad} %`);
-      $("#fichas-tiempo").find(`#d${string}`).find("ul").find("#lViento").find(".px-3").find(".sViento").html(`${aMediciones.velViento} m/s`);
+      $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lEstado").find(".iEstado").attr("src", `images/${aMediciones.estado}.png`);
+      $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lTemperatura").find(".px-3").find(".sTemperatura").html(`${aMediciones.temperatura} ºC`);
+      $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lHumedad").find(".px-3").find(".sHumedad").html(`${aMediciones.humedad} %`);
+      $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lViento").find(".px-3").find(".sViento").html(`${aMediciones.velViento} m/s`);
     });
 }
 
 /* función que devuelve la hora actual */
 
 function nowHora(localidad) {
-  let date = new Date(); 
+  let date = new Date();
   let hh = date.getHours();
   let mm = date.getMinutes();
   let ss = date.getSeconds();
 
-   hh = (hh < 10) ? "0" + hh : hh;
-   mm = (mm < 10) ? "0" + mm : mm;
-   ss = (ss < 10) ? "0" + ss : ss;
-    
-   let hora = hh + ":" + mm + ":" + ss;
+  hh = hh < 10 ? "0" + hh : hh;
+  mm = mm < 10 ? "0" + mm : mm;
+  ss = ss < 10 ? "0" + ss : ss;
 
-   $("#fichas-tiempo").find(`#d${localidad}`).find("ul").find("#lEstado").find(".sHora").html(`${hora}`); 
-  let t = setTimeout(function(){ nowHora(localidad) }, 1000);
+  let hora = hh + ":" + mm + ":" + ss;
+
+  $("#dFichasTiempo").find(`#d${localidad}`).find("ul").find("#lEstado").find(".sHora").html(`${hora}`);
+  let t = setTimeout(function () {
+    nowHora(localidad);
+  }, 125);
 }
 
 /* cerrar aviso añadir localidad */
@@ -283,31 +352,32 @@ window.CloseAlertLocalidad = CloseAlertLocalidad;
 
 /* comportamiendos dinámicos lista localidades */
 
-$("#c-loc-activas").on("click", ".dropdown-item", function (e) {
+$("#dLocActivas").on("click", ".dropdown-item", function (e) {
   return false;
 });
 
-$("#c-loc-activas").on("mouseenter", ".dropdown-item", function () {
+$("#dLocActivas").on("mouseenter", ".dropdown-item", function () {
   $(this).find(".dCerrar").hide("slide", { direction: "left" }, 1);
   $(this).find(".dCerrar").removeClass("d-none").show("slide", { direction: "right" }, 250);
 });
 
-$("#c-loc-activas").on("mouseleave", ".dropdown-item", function () {
+$("#dLocActivas").on("mouseleave", ".dropdown-item", function () {
   $(this).find(".dCerrar").addClass("d-none").hide("slide", { direction: "left" }, 1);
 });
 
 /* función dinámica para eliminar las localidades escogidas */
 
-$("#c-loc-activas").on("click", ".dCerrar", function () {
+$("#dLocActivas").on("click", ".dCerrar", function () {
   locActivas--;
 
   var idLocali = $(this).attr("id");
 
+  idLocali = idLocali.substring(5);
+
   $(this).closest("li").remove();
-  $("#fichas-tiempo").find(`#d${idLocali}`).remove();
+  $("#dFichasTiempo").find(`#d${idLocali}`).remove();
 
   map.eachLayer(function (layer) {
-
     if ($(layer._icon).attr("id") == `mark${idLocali}`) {
       $(layer._icon).attr("src", "../images/marcador.png"); //asefdsrgtyhjuyhgdfasadfghyjgfds hola ando de mañana usa d-none para ocultar cositas con los filtros
     }
@@ -317,22 +387,22 @@ $("#c-loc-activas").on("click", ".dCerrar", function () {
 /* drag & drop */
 
 $("#iTemperatura").draggable({
-  containment: "#cDragZone",
+  containment: "#dDragZone",
   helper: "clone",
   revert: false,
 });
 $("#iHumedad").draggable({
-  containment: "#cDragZone",
+  containment: "#dDragZone",
   helper: "clone",
   revert: false,
 });
 $("#iViento").draggable({
-  containment: "#cDragZone",
+  containment: "#dDragZone",
   helper: "clone",
   revert: false,
 });
 
-$("#fichas-tiempo").on("DOMNodeInserted", ".c-baliza", function () {
+$("#dFichasTiempo").on("DOMNodeInserted", ".c-baliza", function () {
   $(this).droppable({
     drop: function (event, ui) {
       let parametro = ui.draggable.attr("id");
