@@ -47,6 +47,82 @@ var iconMarkerSelect = L.icon({
   iconSize: [41, 41],
 });
 
+/* tenemos ocultos los marcadores (simulando el autorization, ya que no habrían cargado aún) */
+
+$(".leaflet-marker-pane").addClass("d-none");
+
+/* si nos hemos logueado, se nos mostrarán los marcadores y posibles localidades guardadas (simulamos autorization)*/
+
+function showContent(){
+
+  $("#dLogin").remove();
+  $(".leaflet-marker-pane").removeClass("d-none");
+  $("#dFichasTiempo").removeClass("d-none");
+}
+
+window.showContent = showContent;
+
+/* mostramos el panel de registrarse (simulando aladir usuario para autorization) */
+
+function showRegistrar(){
+
+  $("#dFormLogin").addClass("d-none");
+  var divRegistrar = $(`
+  <div id="dFormRegistrar" class="container-sm d-flex flex-column justify-content-center rounded-3 border border-1 border-dark divEmergente">
+          <div id="dRegTitulo" class="container d-flex flex-column mt-2 mb-auto">
+            <div class="input-group-prepend position-absolute mt-1">
+              <span id="sAtras" class="input-group-text dIcono text-light bg-dark" onclick="backToLogin()"><i class="fas fa-reply"></i></span>
+            </div>
+            <span class="fs-3 text-light border-bottom align-items-center mx-auto">Regístrate</span>
+          </div>
+            <form class="d-flex flex-column mb-auto h-75">
+              <div class="input-group form-group mb-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text dIcono text-light bg-dark"><i class="fas fa-user-circle"></i></span>
+                </div>
+                <input type="text" class="form-control" placeholder="Nombre" />
+                <input type="text" class="form-control" placeholder="Apellidos" />
+              </div>
+              <div class="input-group form-group mt-2 mb-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text dIcono text-light bg-dark"><i class="fas fa-at"></i></span>
+                </div>
+                <input type="text" class="form-control" placeholder="Correo electrónico" />
+              </div>
+              <div class="input-group form-group mt-2 mb-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text dIcono text-light bg-dark"><i class="fas fa-user"></i></span>
+                </div>
+                <input type="text" class="form-control" placeholder="Usuario" />
+              </div>
+              <div class="input-group form-group mt-2 mb-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text dIcono text-light bg-dark"><i class="fas fa-key"></i></span>
+                </div>
+                <input type="password" class="form-control" placeholder="Contraseña" />
+              </div>
+              <div class="input-group form-group mt-2 mb-4">
+                <input type="password" class="form-control" placeholder="Confirmar contraseña" />
+              </div>
+              <div class="form-group align-self-center mt-2">
+                <button type="button" class="btn btn-light text-dark" onclick="backToLogin()">Registrarse</button>
+              </div>
+            </form>
+      </div>
+  `).appendTo("#dLogin");
+}
+
+window.showRegistrar = showRegistrar;
+
+function backToLogin(){
+
+$("#dFormRegistrar").remove();
+$("#dFormLogin").removeClass("d-none");
+
+}
+
+window.backToLogin = backToLogin;
+
 /* recogemos posibles valores guardados en el localstorage */
 
 if (localStorage.Balizas == undefined) {
@@ -55,6 +131,9 @@ if (localStorage.Balizas == undefined) {
 } else {
   if (localStorage.getItem("Balizas").length != 0) {
     aLocalBalizas = JSON.parse(localStorage.Balizas);
+    if(aLocalBalizas.length > maxLoc){
+      maxLoc = aLocalBalizas.length;
+    }
   }
 }
 /* creamos todos los marcadores de localidades */
@@ -65,10 +144,10 @@ GetLocalidadesAPI();
 
 function GetLocalidadesAPI() {
   /* un array temporal para poder devolver los datos recogidos y reutilizarlos */
-
+  
   var setProvincias = new Set();
-
-  fetch("http://10.10.17.109:5000/api/Localidades")
+//10.10.17.109
+  fetch("http://192.168.0.15:5000/api/Localidades")
     .then((response) => response.json())
     .then((aMarcadores) => {
       aMarcadores.forEach((poblacion) => {
@@ -134,8 +213,15 @@ function GetLocalidadesAPI() {
 
 function localstrgLocalidades(marcador) {
   var memoryMarcadores = JSON.parse(localStorage.Balizas);
+  var isStored = false;
 
-  if (memoryMarcadores.includes(marcador[0]._icon.id.substring(4))) {
+  memoryMarcadores.forEach(baliza => {
+    if (baliza[0] == (marcador[0]._icon.id.substring(4))) {
+      isStored = true;
+    }
+  });
+
+  if(isStored){
     addLocalidad(marcador);
   }
 }
@@ -257,9 +343,9 @@ window.addEventListener("load", function (event) {
 $("#dMaxBalizas").on("click", "#bMenosBal", function (e) {
   if (locActivas > maxLoc - 1 || maxLoc - 1 <= 0) {
     var sHtml = `<div id="dAnyadirLoc" class="container-fluid d-flex justify-content-center align-items-center position-fixed fondoEmergente">
-                    <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-5 border-dark divEmergente">
-                      <div class="container d-flex justify-content-center mt-5">
-                        <span class="fs-6 text-center text-dark">El máximo de localidades no puede ser menor a 0, o que las activas actualmente.</span>
+                    <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-1 border-dark divEmergente">
+                      <div class="container d-flex justify-content-center mt-4">
+                        <span class="fs-4 text-center text-light">El máximo de localidades no puede ser menor a 0, o que las activas actualmente.</span>
                       </div>
                       <div class="container d-flex row justify-content-center h-auto w-auto my-4">
                         <button type="button" class="btn btn-light mt-3" onclick="CloseAlertLocalidad()">Cerrar</button>
@@ -283,9 +369,9 @@ $("#dMaxBalizas").on("click", "#bPlusBal", function (e) {
 
 function alertLocalidad(marcador) {
   var sHtml = `<div id="dAnyadirLoc" class="container-fluid d-flex justify-content-center align-items-center position-fixed fondoEmergente">
-        <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-5 border-dark divEmergente">
-            <div class="container d-flex justify-content-center mt-3">
-                <span class="fs-6 text-center text-dark">¿Desea ver el temporal de ${marcador[1]}?</span>
+        <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-1 border-dark divEmergente">
+            <div class="container d-flex justify-content-center mt-2">
+                <span class="fs-4 text-center text-light">¿Desea ver el temporal de ${marcador[1]}?</span>
             </div>
             <div class="container d-flex row justify-content-center h-50 mt-3">
                 <button type="button" class="btn btn-secondary" onclick="tryAddLocalidad(infoMarker)">Aceptar</button>
@@ -306,8 +392,8 @@ function tryAddLocalidad(marcador) {
       .querySelectorAll("*")
       .forEach((n) => n.remove());
     document.getElementById("dMensajeAL").innerHTML = `
-    <div class="container d-flex justify-content-center mt-5">
-      <span class="fs-6 text-center text-dark">Ha sobrepasado el límite de localizaciones, elimine alguna de las seleccionadas.</span>
+    <div class="container d-flex justify-content-center mt-4">
+      <span class="fs-4 text-center text-light">Ha sobrepasado el límite de localizaciones, elimine alguna de las seleccionadas.</span>
     </div>
     <div class="container d-flex row justify-content-center h-auto w-auto my-4">
       <button type="button" class="btn btn-light mt-3" onclick="CloseAlertLocalidad()">Cerrar</button>
@@ -319,8 +405,8 @@ function tryAddLocalidad(marcador) {
       .querySelectorAll("*")
       .forEach((n) => n.remove());
     document.getElementById("dMensajeAL").innerHTML = `
-    <div class="container d-flex justify-content-center mt-5">
-      <span class="fs-6 text-center text-dark">Ya ha obtenido los datos de esta localidad, por favor escoja de nuevo.</span>
+    <div class="container d-flex justify-content-center mt-4">
+      <span class="fs-4 text-center text-light">Ya ha obtenido los datos de esta localidad, por favor escoja de nuevo.</span>
     </div>
     <div class="container d-flex row justify-content-center h-auto w-auto my-4">
       <button type="button" class="btn btn-light mt-3" onclick="CloseAlertLocalidad()">Cerrar</button>
@@ -384,8 +470,18 @@ function addLocalidad(marcador) {
 
   locActivas++;
 
-  if (!aLocalBalizas.includes(marcador[0]._icon.id.substring(4))) {
-    aLocalBalizas.push(marcador[0]._icon.id.substring(4));
+  /* reactivando antigüos parámetros */
+
+  var isStored = false;
+
+  aLocalBalizas.forEach(baliza => {
+    if (baliza[0] == (marcador[0]._icon.id.substring(4))) {
+      isStored = true;
+    }
+  });
+
+  if (!isStored) {
+    aLocalBalizas.push([marcador[0]._icon.id.substring(4), true, true, false]);
     localStorage.Balizas = JSON.stringify(aLocalBalizas);
   }
 }
@@ -409,9 +505,9 @@ function listenFichasDatos() {
 }
 
 /* Función que recoge los datos de la baliza seleccionada */
-
+//10.10.17.109
 function GetMediciones(string) {
-  fetch(`http://10.10.17.109:5000/api/TemporalLocalidades/${string}`)
+  fetch(`http://192.168.0.15:5000/api/TemporalLocalidades/${string}`)
     .then((response) => response.json())
     .then((aMediciones) => {
       $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lEstado").find(".iEstado").attr("src", `images/${aMediciones.estado}.png`);
@@ -482,10 +578,13 @@ $("#dLocActivas").on("click", ".dCerrar", function () {
     }
   });
 
-  aLocalBalizas = aLocalBalizas.filter((Baliza) => Baliza !== idLocali);
+  aLocalBalizas = aLocalBalizas.filter((Baliza) => Baliza[0] !== idLocali);
   localStorage.Balizas = JSON.stringify(aLocalBalizas);
 });
 
+/* tooltips imágenes parámetros */
+
+$('[data-toggle="tooltip"]').tooltip(); 
 /* drag & drop */
 
 $("#iTemperatura").draggable({
