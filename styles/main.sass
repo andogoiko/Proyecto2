@@ -4,6 +4,10 @@ $info: #fff7fe
 
 @import "../node_modules/bootstrap/scss/bootstrap"
 
+/* importamos iconos de google*/
+
+@import url('https://fonts.googleapis.com/css?family=Numans')
+
 /* colores */
 $negrol: #0c0c0c
 $azulMarino: #1a2224
@@ -45,8 +49,10 @@ body
     -moz-background-size: cover
     -o-background-size: cover
     background-size: cover
+    background-repeat: no-repeat
+    background-attachment: fixed
 
-    #dAnyadirLoc
+    .fondoEmergente
 
         height: 100%
         backdrop-filter: blur(6px)
@@ -57,6 +63,32 @@ body
             height: 250px
             width: 400px
             background-color: #f0ecec
+
+        #dFormLogin
+
+            height: 350px
+            width: 400px
+            background-color: #f0ecec
+
+            .input-group-prepend
+
+                span
+                    width: 50px
+                    //background-color: #FFC312
+                    color: black
+                    border: 0 !important
+
+            .remember input
+
+                width: 20px
+                height: 20px
+                margin-left: 15px
+                margin-right: 5px
+
+            .login_btn
+                color: black
+                background-color: #5c5950
+                width: 100px
 
     #dHeader
 

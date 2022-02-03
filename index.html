@@ -1,126 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css"
-        integrity="sha512-1xoFisiGdy9nvho8EgXuXvnpR5GAMSjFwp40gSRE3NwdUdIMIKuPa7bqoUhLD0O/5tPNhteAsE5XyyMi5reQVA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="styles/main.sass">
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css"
+      integrity="sha512-1xoFisiGdy9nvho8EgXuXvnpR5GAMSjFwp40gSRE3NwdUdIMIKuPa7bqoUhLD0O/5tPNhteAsE5XyyMi5reQVA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+    <link rel="stylesheet" href="styles/main.sass" />
+  </head>
 
-<body>
+  <body>
+    <div id="dLogin" class="container-fluid d-flex justify-content-center align-items-center position-fixed fondoEmergente">
+      <div id="dFormLogin" class="container-sm d-flex justify-content-center row rounded-3 border border-5 border-dark divEmergente">
+        <div class="card">
+          <div class="card-header">
+            <h3>Identifícate</h3>
+          </div>
+          <div class="card-body">
+            <form>
+              <div class="input-group form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-user"></i></span>
+                </div>
+                <input type="text" class="form-control" placeholder="Usuario" />
+              </div>
+              <div class="input-group form-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-key"></i></span>
+                </div>
+                <input type="password" class="form-control" placeholder="Contraseña" />
+              </div>
+              <div class="row align-items-center remember"><input type="checkbox" />Recuérdame</div>
+              <div class="form-group">
+                <input type="submit" value="Entrar" class="btn float-right login_btn" />
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <div class="d-flex justify-content-center links">¿No tienes cuenta?<a href="#">Regístrate</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div id="dHeader" class="container-fluid d-flex flex-column py-3 border-bottom">
-        <span class="fs-1 text-center text-light">Euskadi Temporalis Analysis</span>
-        <div class="container-fluid d-flex justify-content-center p-0">
-            <button id="bInicSes" type="button" class="btn btn-light fs-6 border-0 text-light bg-transparent">Iniciar Sesión (API)</button>
-            <button id="bRegist" type="button" class="btn btn-light fs-6 border-0 text-light bg-transparent">Registrarse (API)</button>
-        </div>
+      <span class="fs-1 text-center text-light">Euskadi Temporalis Analysis</span>
     </div>
 
     <div id="dSection" class="container-fluid d-flex align-items-center flex-column">
+      <div id="dVisib" class="container d-flex mt-5">
+        <button id="bVisib" type="button" class="btn btn-light mt-1 mb-2 py-0 px-2 ms-auto">-</button>
+      </div>
 
-        <div id="dVisib" class="container d-flex mt-5">
-            <button id="bVisib" type="button" class="btn btn-light mt-1 mb-2 py-0 px-2 ms-auto">-</button>
-        </div>
-
-        <div id="dMapa" class="container pb-2 rounded-bottom">
-            <div id="dFiltros" class="leaflet-control container position-absolute px-5 mx-auto start-0 end-0 mt-3">
-                <div id="dDropFiltros" class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="bFiltros"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Filtros
-                    </button>
-                    <div id="dMenuFiltros" class="dropdown-menu mb-5" aria-labelledby="bFiltros">
-                        <div class="container d-flex justify-content-around">
-                            <div class="container-sm d-flex justify-content-center">
-                                <span class="fs-6 mt-1">Provincia:</span>
-                                <select id="sProvincias" class="custom-select custom-select-sm mx-1">
-                                    <option selected></option>
-                                </select>
-                            </div>
-                            <div class="container-sm d-flex justify-content-center">
-                                <span class="fs-6 mt-1">Localidad:</span>
-                                <select id="sLocalidades" class="custom-select custom-select-sm mx-1">
-                                    <option selected></option>
-                                </select>
-                            </div>
-                            <div class="container d-flex">
-                                <button id="bFiltrado" type="button"
-                                    class="btn btn-sm btn-secondary ms-auto">Filtrar</button>
-                            </div>
-                        </div>
-                    </div>
+      <div id="dMapa" class="container pb-2 rounded-bottom">
+        <div id="dFiltros" class="leaflet-control container position-absolute px-5 mx-auto start-0 end-0 mt-3">
+          <div id="dDropFiltros" class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="bFiltros" data-bs-toggle="dropdown" aria-expanded="false">Filtros</button>
+            <div id="dMenuFiltros" class="dropdown-menu mb-5" aria-labelledby="bFiltros">
+              <div class="container d-flex justify-content-around">
+                <div class="container-sm d-flex justify-content-center">
+                  <span class="fs-6 mt-1">Provincia:</span>
+                  <select id="sProvincias" class="custom-select custom-select-sm mx-1">
+                    <option selected></option>
+                  </select>
                 </div>
-            </div>
-
-            <div id="dMap" class="container position-relative"></div>
-        </div>
-
-
-
-        <div id="dTextDrag" class="container mt-5 mb-1">
-            <span class="fs-5 text-center border-bottom">Parámetros añadibles:</span>
-        </div>
-        <div id="dDragZone" class="container-fluid ">
-            <div id="dParametros"
-                class="container d-flex flex-row justify-content-around py-1 border border-dark rounded">
-                <img id="iTemperatura" class="img-fluid" src="images/temperatura.png" alt="">
-                <img id="iHumedad" class="img-fluid" src="images/humedad.png" alt="">
-                <img id="iViento" class="img-fluid" src="images/viento.png" alt="">
-            </div>
-
-            <div id="dLocActivas" class="container d-flex align-items-center mt-5 mb-3">
-                <div id="dDropLocActivas" class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="bLocActivas"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Localidades activas
-                    </button>
-                    <ul id="ulLocActivas" class="dropdown-menu" aria-labelledby="false">
-                    </ul>
+                <div class="container-sm d-flex justify-content-center">
+                  <span class="fs-6 mt-1">Localidad:</span>
+                  <select id="sLocalidades" class="custom-select custom-select-sm mx-1">
+                    <option selected></option>
+                  </select>
                 </div>
-                <div id="dMaxBalizas" class="container d-flex ms-auto justify-content-end">
-                    <span class="fs-6 text-center text-dark">Máx Localidades:</span>
-                    <button id="bMenosBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">-</button>
-                    <span id="sMaxBalizas" class="fs-6 text-center text-dark"></span>
-                    <button id="bPlusBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">+</button>
-
+                <div class="container d-flex">
+                  <button id="bFiltrado" type="button" class="btn btn-sm btn-secondary ms-auto">Filtrar</button>
                 </div>
+              </div>
             </div>
-
-            <div id="dFichasTiempo" class="container d-flex row flex-wrap justify-content-around"></div>
+          </div>
         </div>
 
+        <div id="dMap" class="container position-relative"></div>
+      </div>
+
+      <div id="dTextDrag" class="container mt-5 mb-1">
+        <span class="fs-5 text-center border-bottom">Parámetros añadibles:</span>
+      </div>
+      <div id="dDragZone" class="container-fluid">
+        <div id="dParametros" class="container d-flex flex-row justify-content-around py-1 border border-dark rounded">
+          <img id="iTemperatura" class="img-fluid" src="images/temperatura.png" alt="" />
+          <img id="iHumedad" class="img-fluid" src="images/humedad.png" alt="" />
+          <img id="iViento" class="img-fluid" src="images/viento.png" alt="" />
+        </div>
+
+        <div id="dLocActivas" class="container d-flex align-items-center mt-5 mb-3">
+          <div id="dDropLocActivas" class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="bLocActivas" data-bs-toggle="dropdown" aria-expanded="false">Localidades activas</button>
+            <ul id="ulLocActivas" class="dropdown-menu" aria-labelledby="false"></ul>
+          </div>
+          <div id="dMaxBalizas" class="container d-flex ms-auto justify-content-end">
+            <span class="fs-6 text-center text-dark">Máx Localidades:</span>
+            <button id="bMenosBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">-</button>
+            <span id="sMaxBalizas" class="fs-6 text-center text-dark"></span>
+            <button id="bPlusBal" type="button" class="btn controlLoc btn-dark text-light mx-2 mb-2 px-2 py-0">+</button>
+          </div>
+        </div>
+
+        <div id="dFichasTiempo" class="container d-flex row flex-wrap justify-content-around"></div>
+      </div>
     </div>
 
     <div id="dFooter" class="container-fluid py-3 mt-4 align-self-end">
-        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-            <li class="nav-item"><a href="http://185.60.40.210/2daw3/andoitzg/index.html"
-                    class="nav-link px-2 text-muted">Mi página</a></li>
-            <li class="nav-item"><a href="https://github.com/andogoiko" class="nav-link px-2 text-muted">Github</a></li>
-        </ul>
-        <p class="text-center text-muted">&copy; 2022, IES PLAIAUNDI BHI</p>
+      <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+        <li class="nav-item"><a href="http://185.60.40.210/2daw3/andoitzg/index.html" class="nav-link px-2 text-muted">Mi página</a></li>
+        <li class="nav-item"><a href="https://github.com/andogoiko" class="nav-link px-2 text-muted">Github</a></li>
+      </ul>
+      <p class="text-center text-muted">&copy; 2022, IES PLAIAUNDI BHI</p>
     </div>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js"
-        integrity="sha512-SeiQaaDh73yrb56sTW/RgVdi/mMqNeM2oBwubFHagc5BkixSpP1fvqF47mKzPGWYSSy4RwbBunrJBQ4Co8fRWA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js"
+      integrity="sha512-SeiQaaDh73yrb56sTW/RgVdi/mMqNeM2oBwubFHagc5BkixSpP1fvqF47mKzPGWYSSy4RwbBunrJBQ4Co8fRWA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="scripts/main.js" type="module"></script>
-</body>
-
+  </body>
 </html>

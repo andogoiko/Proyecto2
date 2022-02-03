@@ -256,8 +256,8 @@ window.addEventListener("load", function (event) {
 
 $("#dMaxBalizas").on("click", "#bMenosBal", function (e) {
   if (locActivas > maxLoc - 1 || maxLoc - 1 <= 0) {
-    var sHtml = `<div id="dAnyadirLoc" class="container-fluid d-flex justify-content-center align-items-center position-fixed">
-                    <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-5 border-dark">
+    var sHtml = `<div id="dAnyadirLoc" class="container-fluid d-flex justify-content-center align-items-center position-fixed fondoEmergente">
+                    <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-5 border-dark divEmergente">
                       <div class="container d-flex justify-content-center mt-5">
                         <span class="fs-6 text-center text-dark">El máximo de localidades no puede ser menor a 0, o que las activas actualmente.</span>
                       </div>
@@ -282,8 +282,8 @@ $("#dMaxBalizas").on("click", "#bPlusBal", function (e) {
 /* aviso para añadir localidad */
 
 function alertLocalidad(marcador) {
-  var sHtml = `<div id="dAnyadirLoc" class="container-fluid d-flex justify-content-center align-items-center position-fixed">
-        <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-5 border-dark">
+  var sHtml = `<div id="dAnyadirLoc" class="container-fluid d-flex justify-content-center align-items-center position-fixed fondoEmergente">
+        <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-5 border-dark divEmergente">
             <div class="container d-flex justify-content-center mt-3">
                 <span class="fs-6 text-center text-dark">¿Desea ver el temporal de ${marcador[1]}?</span>
             </div>
@@ -414,7 +414,7 @@ function GetMediciones(string) {
   fetch(`http://10.10.17.109:5000/api/TemporalLocalidades/${string}`)
     .then((response) => response.json())
     .then((aMediciones) => {
-      $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lEstado").find(".iEstado").attr("src", `../images/${aMediciones.estado}.png`);
+      $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lEstado").find(".iEstado").attr("src", `images/${aMediciones.estado}.png`);
       $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lTemperatura").find(".px-3").find(".sTemperatura").html(`${aMediciones.temperatura} ºC`);
       $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lHumedad").find(".px-3").find(".sHumedad").html(`${aMediciones.humedad} %`);
       $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lViento").find(".px-3").find(".sViento").html(`${aMediciones.velViento} m/s`);
@@ -478,7 +478,7 @@ $("#dLocActivas").on("click", ".dCerrar", function () {
 
   map.eachLayer(function (layer) {
     if ($(layer._icon).attr("id") == `mark${idLocali}`) {
-      $(layer._icon).attr("src", "../images/marcador.png");
+      $(layer._icon).attr("src", "images/marcador.png");
     }
   });
 
