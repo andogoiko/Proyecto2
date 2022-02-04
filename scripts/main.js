@@ -156,8 +156,8 @@ function GetLocalidadesAPI() {
   /* un array temporal para poder devolver los datos recogidos y reutilizarlos */
 
   var setProvincias = new Set();
-
-  fetch("http://10.10.17.109:5000/api/Localidades")
+//10.10.17.109
+  fetch("http://192.168.0.15:5000/api/Localidades")
     .then((response) => response.json())
     .then((aMarcadores) => {
       aMarcadores.forEach((poblacion) => {
@@ -362,11 +362,11 @@ $("#dMaxBalizas").on("click", "#bMenosBal", function (e) {
   if (locActivas > maxLoc - 1 || maxLoc - 1 <= 0) {
     var sHtml = `<div id="dAnyadirLoc" class="container-fluid d-flex justify-content-center align-items-center position-fixed fondoEmergente">
                     <div id="dMensajeAL" class="container-sm d-flex justify-content-center row rounded-3 border border-1 border-dark divEmergente">
-                      <div class="container d-flex justify-content-center mt-4">
-                        <span class="fs-4 text-center text-light">El máximo de localidades no puede ser menor a 0, o que las activas actualmente.</span>
+                      <div class="container d-flex justify-content-center mt-5">
+                        <span class="fs-4 text-center text-light">El máximo de localidades no puede ser 0, o menor a las que están activas actualmente.</span>
                       </div>
                       <div class="container d-flex row justify-content-center h-auto w-auto my-4">
-                        <button type="button" class="btn btn-light mt-3" onclick="CloseAlertLocalidad()">Cerrar</button>
+                        <button type="button" class="btn btn-light mb-2" onclick="CloseAlertLocalidad()">Cerrar</button>
                       </div>
                     </div>
                   </div>    `;
@@ -541,7 +541,8 @@ function listenFichasDatos() {
 /* Función que recoge los datos de la baliza seleccionada */
 //10.10.17.109
 function GetMediciones(string) {
-  fetch(`http://10.10.17.109:5000/api/TemporalLocalidades/${string}`)
+  //10.10.17.109
+  fetch(`http://192.168.0.15:5000/api/TemporalLocalidades/${string}`)
     .then((response) => response.json())
     .then((aMediciones) => {
       $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lEstado").find(".iEstado").attr("src", `images/${aMediciones.estado}.png`);
@@ -618,7 +619,7 @@ $("#dLocActivas").on("click", ".dCerrar", function () {
     .promise()
     .done(function () {
       if (!$("#dFichasTiempo").children().length) {
-        console.log("asas");
+
         $("#dFichasTiempo").css("height", "");
       }
     });
