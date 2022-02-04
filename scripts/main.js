@@ -53,19 +53,24 @@ $(".leaflet-marker-pane").addClass("d-none");
 
 /* si nos hemos logueado, se nos mostrarán los marcadores y posibles localidades guardadas (simulamos autorization)*/
 
-function showContent(){
+function showContent() {
+  $("#dFormLogin").addClass("position-absolute").animate({ bottom: 0 }, 350).fadeOut({ queue: false });
 
-  $("#dLogin").remove();
-  $(".leaflet-marker-pane").removeClass("d-none");
-  $("#dFichasTiempo").removeClass("d-none");
+  $("#dFormLogin")
+    .promise()
+    .done(function () {
+      $("#dLogin").remove();
+      $(".leaflet-marker-pane").removeClass("d-none");
+      $("#dFichasTiempo").removeClass("d-none");
+    });
 }
 
 window.showContent = showContent;
 
 /* mostramos el panel de registrarse (simulando aladir usuario para autorization) */
 
-function showRegistrar(){
-
+function showRegistrar() {
+  $("#dFormLogin").fadeIn("fast");
   $("#dFormLogin").addClass("d-none");
   var divRegistrar = $(`
   <div id="dFormRegistrar" class="container-sm d-flex flex-column justify-content-center rounded-3 border border-1 border-dark divEmergente">
@@ -109,16 +114,21 @@ function showRegistrar(){
               </div>
             </form>
       </div>
-  `).appendTo("#dLogin");
+  `)
+    .appendTo("#dLogin")
+    .animate({ height: 500 }, 200);
 }
 
 window.showRegistrar = showRegistrar;
 
-function backToLogin(){
-
-$("#dFormRegistrar").remove();
-$("#dFormLogin").removeClass("d-none");
-
+function backToLogin() {
+  $("#dFormRegistrar").fadeIn({ queue: false }, "fast").animate({ height: 350 }, 200);
+  $("#dFormRegistrar")
+    .promise()
+    .done(function () {
+      $("#dFormRegistrar").remove();
+      $("#dFormLogin").removeClass("d-none");
+    });
 }
 
 window.backToLogin = backToLogin;
@@ -131,7 +141,7 @@ if (localStorage.Balizas == undefined) {
 } else {
   if (localStorage.getItem("Balizas").length != 0) {
     aLocalBalizas = JSON.parse(localStorage.Balizas);
-    if(aLocalBalizas.length > maxLoc){
+    if (aLocalBalizas.length > maxLoc) {
       maxLoc = aLocalBalizas.length;
     }
   }
@@ -144,10 +154,10 @@ GetLocalidadesAPI();
 
 function GetLocalidadesAPI() {
   /* un array temporal para poder devolver los datos recogidos y reutilizarlos */
-  
+
   var setProvincias = new Set();
-//10.10.17.109
-  fetch("http://192.168.0.15:5000/api/Localidades")
+
+  fetch("http://10.10.17.109:5000/api/Localidades")
     .then((response) => response.json())
     .then((aMarcadores) => {
       aMarcadores.forEach((poblacion) => {
@@ -215,13 +225,13 @@ function localstrgLocalidades(marcador) {
   var memoryMarcadores = JSON.parse(localStorage.Balizas);
   var isStored = false;
 
-  memoryMarcadores.forEach(baliza => {
-    if (baliza[0] == (marcador[0]._icon.id.substring(4))) {
+  memoryMarcadores.forEach((baliza) => {
+    if (baliza[0] == marcador[0]._icon.id.substring(4)) {
       isStored = true;
     }
   });
 
-  if(isStored){
+  if (isStored) {
     addLocalidad(marcador);
   }
 }
@@ -317,19 +327,27 @@ $(`#bFiltrado`).on("click", function (e) {
 $("#dVisib")
   .find("#bVisib")
   .click(function () {
-    $("#dMapa").toggle();
+    /* procurando un fallo visual */
 
-    if ($(this).parent().attr("id")) {
-      $(this).removeClass("btn-light");
-      $(this).addClass("btn-dark");
-      $("#dVisib").removeAttr("id");
-      $(this).html("+");
-    } else {
-      $(this).removeClass("btn-dark");
-      $(this).addClass("btn-light");
-      $(this).parent().attr("id", "dVisib");
-      $(this).html("-");
+    if ($("#bVisib").html() == "+") {
+      $("#bVisib").parent().attr("id", "dVisib");
     }
+
+    $("#dMapa")
+      .slideToggle()
+      .promise()
+      .done(function () {
+        if ($("#bVisib").parent().attr("id") && $("#bVisib").html() != "+") {
+          $("#bVisib").removeClass("btn-light");
+          $("#bVisib").addClass("btn-dark");
+          $("#dVisib").removeAttr("id");
+          $("#bVisib").html("+");
+        } else {
+          $("#bVisib").removeClass("btn-dark");
+          $("#bVisib").addClass("btn-light");
+          $("#bVisib").html("-");
+        }
+      });
   });
 
 /* colocar el núm de máximas localizaciones */
@@ -470,13 +488,29 @@ function addLocalidad(marcador) {
 
   locActivas++;
 
-  /* reactivando antigüos parámetros */
+  /* reactivando antiguos parámetros */
 
   var isStored = false;
 
-  aLocalBalizas.forEach(baliza => {
-    if (baliza[0] == (marcador[0]._icon.id.substring(4))) {
+  aLocalBalizas.forEach((baliza) => {
+    if (baliza[0] == marcador[0]._icon.id.substring(4)) {
       isStored = true;
+
+      for (let i = 1; i < baliza.length; i++) {
+        if (baliza[i] == true) {
+          $(`#d${marcador[0]._icon.id.substring(4)}`)
+            .find("ul")
+            .children()
+            .eq(i + 2)
+            .removeClass("d-none");
+        } else {
+          $(`#d${marcador[0]._icon.id.substring(4)}`)
+            .find("ul")
+            .children()
+            .eq(i + 2)
+            .addClass("d-none");
+        }
+      }
     }
   });
 
@@ -507,7 +541,7 @@ function listenFichasDatos() {
 /* Función que recoge los datos de la baliza seleccionada */
 //10.10.17.109
 function GetMediciones(string) {
-  fetch(`http://192.168.0.15:5000/api/TemporalLocalidades/${string}`)
+  fetch(`http://10.10.17.109:5000/api/TemporalLocalidades/${string}`)
     .then((response) => response.json())
     .then((aMediciones) => {
       $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lEstado").find(".iEstado").attr("src", `images/${aMediciones.estado}.png`);
@@ -566,11 +600,28 @@ $("#dLocActivas").on("click", ".dCerrar", function () {
   locActivas--;
 
   var idLocali = $(this).attr("id");
+  var height = $("#dFichasTiempo").height();
 
   idLocali = idLocali.substring(5);
 
   $(this).closest("li").remove();
-  $("#dFichasTiempo").find(`#d${idLocali}`).remove();
+  $("#dFichasTiempo")
+    .find(`#d${idLocali}`)
+    .addClass("position-absolute")
+    .animate({ bottom: 0 }, 350)
+    .fadeOut({ queue: false })
+    .promise()
+    .done(function () {
+      $("#dFichasTiempo").css("height", 333);
+      $(this).remove();
+    })
+    .promise()
+    .done(function () {
+      if (!$("#dFichasTiempo").children().length) {
+        console.log("asas");
+        $("#dFichasTiempo").css("height", "");
+      }
+    });
 
   map.eachLayer(function (layer) {
     if ($(layer._icon).attr("id") == `mark${idLocali}`) {
@@ -584,7 +635,7 @@ $("#dLocActivas").on("click", ".dCerrar", function () {
 
 /* tooltips imágenes parámetros */
 
-$('[data-toggle="tooltip"]').tooltip(); 
+$('[data-toggle="tooltip"]').tooltip();
 /* drag & drop */
 
 $("#iTemperatura").draggable({
@@ -614,14 +665,42 @@ $("#dFichasTiempo").on("DOMNodeInserted", ".c-baliza", function () {
       switch (parametro) {
         case "iTemperatura":
           $(this).find("ul").find("#lTemperatura").removeClass("d-none");
+
+          /* guardando el dato en localstorage */
+
+          aLocalBalizas.forEach((baliza) => {
+            if (baliza[0] == $(this).attr("id").substring(1)) {
+              baliza[1] = true;
+            }
+          });
+
           break;
         case "iHumedad":
           $(this).find("ul").find("#lHumedad").removeClass("d-none");
+
+          /* guardando el dato en localstorage */
+
+          aLocalBalizas.forEach((baliza) => {
+            if (baliza[0] == $(this).attr("id").substring(1)) {
+              baliza[2] = true;
+            }
+          });
+
           break;
         case "iViento":
           $(this).find("ul").find("#lViento").removeClass("d-none");
+
+          /* guardando el dato en localstorage */
+
+          aLocalBalizas.forEach((baliza) => {
+            if (baliza[0] == $(this).attr("id").substring(1)) {
+              baliza[3] = true;
+            }
+          });
+
           break;
       }
+      localStorage.Balizas = JSON.stringify(aLocalBalizas);
     },
   });
 
@@ -642,5 +721,27 @@ $("#dFichasTiempo").on("DOMNodeInserted", ".c-baliza", function () {
     .find(".ocultable")
     .on("click", ".dCerrar", function () {
       $(this).parent().addClass("d-none");
+
+      /* guardando el dato en localstorage */
+
+      aLocalBalizas.forEach((baliza) => {
+        if (baliza[0] == $(this).parent().parent().parent().attr("id").substring(1)) {
+          switch ($(this).parent().attr("id")) {
+            case "lTemperatura":
+              baliza[1] = false;
+              break;
+
+            case "lHumedad":
+              baliza[2] = false;
+              break;
+
+            case "lViento":
+              baliza[3] = false;
+              break;
+          }
+        }
+      });
+
+      localStorage.Balizas = JSON.stringify(aLocalBalizas);
     });
 });

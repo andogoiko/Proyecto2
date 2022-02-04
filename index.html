@@ -28,30 +28,30 @@
   <body>
     <div id="dLogin" class="container-fluid d-flex justify-content-center align-items-center position-fixed fondoEmergente">
       <div id="dFormLogin" class="container-sm d-flex flex-column justify-content-center rounded-3 border border-1 border-dark divEmergente">
-          <div id="dLogTitulo" class="container d-flex flex-column mt-2 mb-auto h-25">
-            <span class="fs-3 text-center text-light mx-auto border-bottom">Identifícate</span>
+        <div id="dLogTitulo" class="container d-flex flex-column mt-2 mb-auto h-25">
+          <span class="fs-3 text-center text-light mx-auto border-bottom">Identifícate</span>
+        </div>
+        <form class="d-flex flex-column mb-auto h-75">
+          <div class="input-group form-group mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text dIcono text-light bg-dark"><i class="fas fa-user"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Usuario" />
           </div>
-            <form class="d-flex flex-column mb-auto h-75">
-              <div class="input-group form-group mb-4">
-                <div class="input-group-prepend">
-                  <span class="input-group-text dIcono text-light bg-dark"><i class="fas fa-user"></i></span>
-                </div>
-                <input type="text" class="form-control" placeholder="Usuario" />
-              </div>
-              <div class="input-group form-group mt-2 mb-4">
-                <div class="input-group-prepend">
-                  <span class="input-group-text dIcono text-light bg-dark"><i class="fas fa-key"></i></span>
-                </div>
-                <input type="password" class="form-control" placeholder="Contraseña" />
-              </div>
-              <div class="row align-items-center text-light mt-1 mb-2"><input id="iRecuerdame" type="checkbox" />Recuérdame</div>
-              <div class="form-group align-self-center">
-                <button type="button" class="btn btn-light text-dark" onclick="showContent()">Entrar</button>
-              </div>
-            </form>
-          <div class="container mb-3">
-            <div class="d-flex justify-content-center text-light">¿No tienes cuenta?<a class="ms-1" href="#" onclick="showRegistrar()">Regístrate</a></div>
+          <div class="input-group form-group mt-2 mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text dIcono text-light bg-dark"><i class="fas fa-key"></i></span>
+            </div>
+            <input type="password" class="form-control" placeholder="Contraseña" />
           </div>
+          <div class="row align-items-center text-light mt-1 mb-2"><input id="iRecuerdame" type="checkbox" />Recuérdame</div>
+          <div class="form-group align-self-center">
+            <button type="button" class="btn btn-light text-dark" onclick="showContent()">Entrar</button>
+          </div>
+        </form>
+        <div class="container mb-3">
+          <div class="d-flex justify-content-center text-light">¿No tienes cuenta?<a class="ms-1 text-light" href="#" onclick="showRegistrar()">Regístrate</a></div>
+        </div>
       </div>
     </div>
 
@@ -98,9 +98,9 @@
       </div>
       <div id="dDragZone" class="container-fluid">
         <div id="dParametros" class="container d-flex flex-row justify-content-around py-1 border border-dark rounded">
-          <img id="iTemperatura" class="img-fluid" src="images/temperatura.png" alt="" data-toggle="tooltip" data-placement="bottom" title="Temperatura"/>
-          <img id="iHumedad" class="img-fluid" src="images/humedad.png" alt="" data-toggle="tooltip" data-placement="bottom" title="Humedad"/>
-          <img id="iViento" class="img-fluid" src="images/viento.png" alt="" data-toggle="tooltip" data-placement="bottom" title="Viento"/>
+          <img id="iTemperatura" class="img-fluid" src="images/temperatura.png" alt="" data-toggle="tooltip" data-placement="bottom" title="Temperatura" />
+          <img id="iHumedad" class="img-fluid" src="images/humedad.png" alt="" data-toggle="tooltip" data-placement="bottom" title="Humedad" />
+          <img id="iViento" class="img-fluid" src="images/viento.png" alt="" data-toggle="tooltip" data-placement="bottom" title="Viento" />
         </div>
 
         <div id="dLocActivas" class="container d-flex align-items-center mt-5 mb-3">

@@ -5,10 +5,11 @@
   "private": true,
   "scripts": {
     "postbuild": "(test -d dist || mkdir dist) && cp -Rv images dist",
+    "prebuild": "(test -d dist || mkdir dist) && cp -Rv images dist",
     "prestart": "yarn postbuild",
     "preproxy": "yarn prebuild",
-    "proxy": "parcel build *.html",
     "build": "parcel build *.html --public-url /2daw3/andoitzg/trabajos/Ando_proyecto_frontend",
+    "proxy": "parcel build *.html",
     "start": "parcel serve *.html --open"
   },
   "devDependencies": {
