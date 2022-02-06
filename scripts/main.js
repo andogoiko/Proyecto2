@@ -154,10 +154,10 @@ GetLocalidadesAPI();
 
 function GetLocalidadesAPI() {
   /* un array temporal para poder devolver los datos recogidos y reutilizarlos */
-
+  
   var setProvincias = new Set();
-//10.10.17.109
-  fetch("http://192.168.0.15:5000/api/Localidades")
+//192.168.0.15
+  fetch("http://10.10.17.109:5000/api/Localidades")
     .then((response) => response.json())
     .then((aMarcadores) => {
       aMarcadores.forEach((poblacion) => {
@@ -539,10 +539,10 @@ function listenFichasDatos() {
 }
 
 /* Función que recoge los datos de la baliza seleccionada */
-//10.10.17.109
+
 function GetMediciones(string) {
-  //10.10.17.109
-  fetch(`http://192.168.0.15:5000/api/TemporalLocalidades/${string}`)
+  //192.168.0.15
+  fetch(`http://10.10.17.109:5000/api/TemporalLocalidades/${string}`)
     .then((response) => response.json())
     .then((aMediciones) => {
       $("#dFichasTiempo").find(`#d${string}`).find("ul").find("#lEstado").find(".iEstado").attr("src", `images/${aMediciones.estado}.png`);
